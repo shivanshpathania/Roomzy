@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Available Hotels</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f6f8;
+        color: #333;
+      }
+      header {
+        background-color: #0f3460;
+        color: white;
+        padding: 20px;
+        text-align: center;
+      }
+      header a {
+        color: #fdb827;
+        text-decoration: none;
+        margin: 0 10px;
+        font-weight: bold;
+      }
+      .hotel-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 20px;
+        padding: 30px;
+      }
+      .hotel-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.3s ease;
+      }
+      .hotel-card:hover {
+        transform: translateY(-5px);
+      }
+      .hotel-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+      .hotel-card h2 {
+        margin: 15px;
+        color: #0f3460;
+      }
+      .hotel-card p {
+        margin: 10px 15px;
+        font-size: 15px;
+        line-height: 1.4;
+      }
+      .weather {
+        margin: 10px 15px;
+        font-size: 14px;
+        color: #555;
+      }
+      form {
+        margin: 10px 15px;
+      }
+      button {
+        background-color: #0f3460;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      .login-btn {
+        display: inline-block;
+        padding: 10px 10px;
+        background-color: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+      }
+      .search-container {
+        text-align: center;
+        margin: 20px;
+      }
+      .search-container input {
+        padding: 10px;
+        width: 50%;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      .search-container button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .search-container button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Available Hotels</h1>
+      <a href="/user/bookings" class="history-btn">Your Booking History</a> |
+      <a href="/login">Login</a> | <a href="/signup">Signup</a>
+
+      <!-- ✅ Currency Selector -->
+      <div style="margin-top: 10px">
+        <label for="currency">Currency:</label>
+        <select id="currency">
+          <option value="INR" selected>INR (₹)</option>
+          <option value="USD">USD ($)</option>
+          <option value="EUR">EUR (€)</option>
+          <option value="GBP">GBP (£)</option>
+        </select>
+      </div>
+    </header>
+
+    <% if (user) { %>
+    <h2 style="text-align: center; text-transform: capitalize">
+      <span style="color: #0c218b">Welcome :</span> <%= user.username %>
+    </h2>
+    <% } else { %>
+    <h2 style="text-align: center; text-transform: capitalize">
+      <span style="color: #0c218b">Welcome, Guest!</span>
+    </h2>
+    <% } %>
+
+    <div class="search-container">
+      <input
+        type="text"
+        id="hotelSearch"
+        placeholder="Search hotels by name or city..."
+      />
+      <button id="searchButton">Search</button>
+    </div>
+
+    <div class="hotel-list">
+      <% hotels.forEach(hotel => { %>
+      <div
+        class="hotel-card"
+        data-name="<%= hotel.name.toLowerCase() %>"
+        data-city="<%= hotel.location.toLowerCase() %>"
+      >
+        <img src="<%= hotel.image %>" alt="<%= hotel.name %>" />
+        <h2><%= hotel.name %></h2>
+        <p><strong>Location:</strong> <%= hotel.location %></p>
+        <p class="weather" id="weather-<%= hotel._id %>">Loading weather...</p>
+
+        <details style="padding: 5%">
+          <summary style="cursor: pointer">View Rooms</summary>
+          <div class="room-options">
+            <% hotel.rooms.forEach(room => { %>
+            <div class="room">
+              <h3><%= room.type %></h3>
+
+              <p>
+                Price:
+                <span class="price" data-base="<%= room.price %>">
+                  ₹<%= room.price %>
+                </span>
+                / night
+              </p>
+
+              <p><%= room.ac ? "AC Room" : "Non-AC Room" %></p>
+              <p>Available: <%= room.available %></p>
+
+              <% if (user) { %>
+              <form action="/api/bookings" method="POST">
+                <input type="hidden" name="hotelId" value="<%= hotel._id %>" />
+                <input type="hidden" name="roomType" value="<%= room.type %>" />
+                <input type="hidden" name="userId" value="<%= user._id %>" />
+                <button type="submit">Book Now</button>
+              </form>
+              <% } else { %>
+              <p>
+                <a
+                  href="/login"
+                  class="login-btn"
+                  onmouseover="this.style.backgroundColor='#2980b9'"
+                  onmouseout="this.style.backgroundColor='#3498db'"
+                >
+                  Login to Book
+                </a>
+              </p>
+              <% } %>
+            </div>
+
+            <% }) %>
+          </div>
+        </details>
+      </div>
+      <% }) %>
+    </div>
+
+    <script>
+      // ✅ Fetch weather for each hotel from backend
+      document.querySelectorAll(".hotel-card").forEach((card) => {
+        const city = card.getAttribute("data-city");
+        const weatherElement = card.querySelector(".weather");
+
+        fetch(`/api/weather/${city}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.main) {
+              const temp = data.main.temp;
+              const description = data.weather[0].description;
+              weatherElement.textContent = `Weather: ${temp}°C, ${description}`;
+            } else {
+              weatherElement.textContent = "Weather data not available";
+            }
+          })
+          .catch(() => {
+            weatherElement.textContent = "Error fetching weather data";
+          });
+      });
+
+      // ✅ Hotel search filter
+      document
+        .getElementById("searchButton")
+        .addEventListener("click", function () {
+          const query = document
+            .getElementById("hotelSearch")
+            .value.toLowerCase();
+          const hotelCards = document.querySelectorAll(".hotel-card");
+
+          hotelCards.forEach((card) => {
+            const hotelName = card.getAttribute("data-name").toLowerCase();
+            const hotelCity = card.getAttribute("data-city").toLowerCase();
+            if (hotelName.includes(query) || hotelCity.includes(query)) {
+              card.style.display = "block";
+            } else {
+              card.style.display = "none";
+            }
+          });
+        });
+
+      // ✅ Currency conversion (static rates version)
+      const rates = {
+        INR: { symbol: "₹", rate: 1 },
+        USD: { symbol: "$", rate: 0.012 }, // Example rate
+        EUR: { symbol: "€", rate: 0.011 },
+        GBP: { symbol: "£", rate: 0.0096 },
+      };
+
+      const selector = document.getElementById("currency"); // 🔥 fixed ID
+
+      if (selector) {
+        selector.addEventListener("change", () => {
+          const selected = selector.value;
+          const prices = document.querySelectorAll(".price");
+
+          prices.forEach((priceEl) => {
+            const base = parseFloat(priceEl.dataset.base); // base INR price
+            const converted = (base * rates[selected].rate).toFixed(2);
+            priceEl.textContent = `${rates[selected].symbol}${converted}`;
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

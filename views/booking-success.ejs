@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booking Success</title>
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background-color: #f3f6f9;
+        text-align: center;
+        padding: 50px;
+        margin: 0;
+      }
+
+      .success-box {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        display: inline-block;
+        width: 100%;
+        max-width: 600px;
+      }
+
+      h1 {
+        color: #28a745;
+        font-size: 2.5em;
+      }
+
+      .success-box p {
+        font-size: 1.2em;
+        margin: 10px 0;
+        color: #444;
+      }
+
+      .btn {
+        display: inline-block;
+        margin-top: 20px;
+        text-decoration: none;
+        color: white;
+        background-color: #0f3460;
+        padding: 15px 25px;
+        border-radius: 10px;
+        font-size: 1.1em;
+        transition: background-color 0.3s ease;
+      }
+
+      .btn:hover {
+        background-color: #1a4d8f;
+      }
+
+      /* currency selector styling */
+      .currency-box {
+        margin-top: 20px;
+      }
+      select {
+        padding: 8px;
+        font-size: 1em;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="success-box">
+      <h1>Booking Confirmed!</h1>
+      <p><strong>Hotel:</strong> <%= hotelName %></p>
+      <p><strong>Room Type:</strong> <%= booking.roomType %></p>
+      <p>
+        <strong>Price:</strong>
+        <span class="price" data-base="<%= booking.price %>"
+          >₹<%= booking.price %></span
+        >
+        / night
+      </p>
+
+      <!-- Currency Dropdown -->
+      <div class="currency-box">
+        <label for="currency">Show price in: </label>
+        <select id="currency">
+          <option value="INR" selected>INR (₹)</option>
+          <option value="USD">USD ($)</option>
+          <option value="EUR">EUR (€)</option>
+          <option value="GBP">GBP (£)</option>
+        </select>
+      </div>
+
+      <a href="/user/bookings" class="btn">View Your Bookings</a>
+    </div>
+
+    <script>
+      // Example static rates (replace with API later)
+      const rates = {
+        INR: { symbol: "₹", rate: 1 },
+        USD: { symbol: "$", rate: 0.012 },
+        EUR: { symbol: "€", rate: 0.011 },
+        GBP: { symbol: "£", rate: 0.0096 },
+      };
+
+      const selector = document.getElementById("currency");
+
+      selector.addEventListener("change", () => {
+        const selected = selector.value;
+        const priceEl = document.querySelector(".price");
+
+        const base = parseFloat(priceEl.dataset.base); // base INR price
+        const converted = (base * rates[selected].rate).toFixed(2);
+        priceEl.textContent = `${rates[selected].symbol}${converted}`;
+      });
+    </script>
+  </body>
+</html>
