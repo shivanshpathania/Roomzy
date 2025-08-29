@@ -1,29 +1,36 @@
 const mongoose = require("mongoose");
 
+// Define the Room schema
+
+
+
 const RoomSchema = new mongoose.Schema({
   type: {
     type: String,
-    required: true
+    required: true // e.g., "Deluxe Room", "Suite"
   },
   price: {
     type: Number,
-    required: true
-  },
-  ac: {
-    type: Boolean,
-    required: true
-  },
-  available: {
-    type: Number,
-    required: true
+    required: true // Price per night
   },
   capacity: {
     type: Number,
     required: true,
-    default: 2
+    default: 2 // Default capacity is 2 people
   },
+  available: {
+    type: Number, // Number of available rooms
+    required: true,
+    default: 0 // Default to 0 if not provided
+  },
+  ac: {
+    type: Boolean, // Whether the room has air conditioning
+    required: true,
+    default: false // Default to Non-AC
+  }
 });
 
+// Define the Hotel schema
 const HotelSchema = new mongoose.Schema(
   {
     name: {
@@ -46,13 +53,11 @@ const HotelSchema = new mongoose.Schema(
       type: Number,
       required: true
     },
-    address: {
-      type: String,
-      required: false
-    },
-    rooms: [RoomSchema],
+    rooms: [RoomSchema] // Add the rooms property as an array of RoomSchema
   },
-  { timestamps: true }
+  { timestamps: true } // Automatically add createdAt and updatedAt timestamps
 );
 
-module.exports = mongoose.model("Hotel", HotelSchema);
+const Hotel = mongoose.model("Hotel", HotelSchema);
+
+module.exports = Hotel;

@@ -10,7 +10,7 @@ const currencyRoutes = require("./routes/currency");
 const session = require("express-session");
 const methodOverride = require("method-override");
 const path = require("path");
-
+const fs = require('fs');
 const app = express();
 connectDB();
 

@@ -337,6 +337,21 @@
           </div>
         </div>
 
+
+  <!-- Hotel Images Gallery -->
+  <div style="max-width: 1200px; margin: 20px auto; text-align: center;">
+    <h2 style="color: #0f3460;"><%= hotel.name %> - Images</h2>
+    <% if (images.length > 0) { %>
+      <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <% images.forEach(image => { %>
+          <img src="<%= image %>" alt="Hotel Image" style="width: 300px; height: 200px; object-fit: cover; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+        <% }) %>
+      </div>
+    <% } else { %>
+      <p>No images available for this hotel.</p>
+    <% } %>
+  </div>
+
         <div class="rooms-section">
           <div class="info-section">
             <h3>🏨 Available Rooms</h3>
@@ -517,6 +532,10 @@
         </div>
       </div>
     </div>
+
+
+
+    <%- include('partials/footer') %>
 
     <script>
       // Currency symbols

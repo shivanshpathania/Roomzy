@@ -107,22 +107,35 @@
   </head>
 
   <body>
-    <header>
-      <h1>Available Hotels</h1>
-      <a href="/user/bookings" class="history-btn">Your Booking History</a> |
-      <a href="/login">Login</a> | <a href="/signup">Signup</a>
-
-      <!-- ✅ Currency Selector -->
-      <div style="margin-top: 10px">
-        <label for="currency">Currency:</label>
-        <select id="currency">
-          <option value="INR" selected>INR (₹)</option>
-          <option value="USD">USD ($)</option>
-          <option value="EUR">EUR (€)</option>
-          <option value="GBP">GBP (£)</option>
-        </select>
+    <header style="background-color: #0f3460; color: white; padding: 10px 20px;">
+      <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+          <!-- Logo -->
+          <div style="flex: 1;">
+              <a href="/" style="color: #fdb827; text-decoration: none; font-size: 1.5em; font-weight: bold;">
+                  Roomzy
+              </a>
+          </div>
+  
+          <!-- Navigation Links -->
+          <nav style="flex: 2; text-align: center;">
+              <a href="/" style="color: white; text-decoration: none; margin: 0 15px;">Home</a>
+              <a href="/user/bookings" style="color: white; text-decoration: none; margin: 0 15px;">Your Bookings</a>
+              <a href="/login" style="color: white; text-decoration: none; margin: 0 15px;">Login</a>
+              <a href="/signup" style="color: white; text-decoration: none; margin: 0 15px;">Signup</a>
+          </nav>
+  
+          <!-- Currency Selector -->
+          <div style="flex: 1; text-align: right;">
+              <label for="currency" style="color: white; margin-right: 10px;">Currency:</label>
+              <select id="currency" style="padding: 5px; border-radius: 5px; border: none;">
+                  <option value="INR" selected>INR (₹)</option>
+                  <option value="USD">USD ($)</option>
+                  <option value="EUR">EUR (€)</option>
+                  <option value="GBP">GBP (£)</option>
+              </select>
+          </div>
       </div>
-    </header>
+  </header>
 
     <% if (user) { %>
     <h2 style="text-align: center; text-transform: capitalize">
@@ -197,6 +210,8 @@
       </div>
       <% }) %>
     </div>
+
+    <%- include('partials/footer') %>
 
     <script>
       // ✅ Fetch weather for each hotel from backend
