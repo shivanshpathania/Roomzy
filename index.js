@@ -5,7 +5,7 @@ const hotelRoute = require("./routes/hotel.js");
 const bookingsRoute = require("./routes/bookings");
 const Hotel = require("./models/Hotel.js");
 const Booking = require("./models/Booking.js");
-const weatherRoutes = require("./routes/weatherRoute"); 
+const weatherRoutes = require("./routes/weatherRoute");
 const currencyRoutes = require("./routes/currency");
 const session = require("express-session");
 const methodOverride = require("method-override");
@@ -22,10 +22,9 @@ app.use(session({
 }));
 
 // Middleware
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(methodOverride('_method'));
@@ -36,20 +35,29 @@ app.use("/", hotelRoute);
 app.use("/api/bookings", bookingsRoute);
 
 // Auth Views
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
     res.render('login');
 });
 
-app.get('/login', (req, res) => {
+app.get('/login', (_, res) => {
     res.render('login');
 });
 
-app.get('/signup', (req, res) => {
+app.get('/signup', (_, res) => {
     res.render('signup');
 });
 
-app.get('/home', (req, res) => {
+app.get('/home', (_, res) => {
     res.render('home');
+});
+
+app.get('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error destroying session:', err);
+        }
+        res.redirect('/login');
+    });
 });
 
 app.get('/hotels', async (req, res) => {
@@ -75,6 +83,7 @@ app.get("/booking-success", async(req, res) => {
         
         res.render("booking-success", {
             booking,
+            hotel,
             hotelName: hotel.name,
             roomType: booking.roomType,
             price: booking.price,
@@ -93,8 +102,11 @@ app.get('/user/bookings', async (req, res) => {
 
     try {
         const userBookings = await Booking.find({ userId: req.session.user._id }).populate('hotelId');
-        
-        res.render('user-bookings', { bookings: userBookings, user: req.session.user });
+
+        // Filter out bookings where hotel was not found (in case hotel was deleted)
+        const validBookings = userBookings.filter(booking => booking.hotelId);
+
+        res.render('user-bookings', { bookings: validBookings, user: req.session.user });
     } catch (err) {
         console.error("Error fetching user bookings:", err);
         res.status(500).send('Something went wrong.');
@@ -102,7 +114,7 @@ app.get('/user/bookings', async (req, res) => {
 });
 
 app.use("/api/weather", weatherRoutes);
-app.use("/currency", currencyRoutes);
+app.use("/api/currency", currencyRoutes);
 
 connectDB().then(() => {
     app.listen(3000, () => {

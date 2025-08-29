@@ -17,22 +17,39 @@ const RoomSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  capacity: {
+    type: Number,
+    required: true,
+    default: 2
+  },
 });
 
 const HotelSchema = new mongoose.Schema(
   {
-    name: { 
-      type: String, 
-      required: true 
-    },
-    location: { 
-      type: String, 
-      required: true 
-    },
-    image: { 
-      type: String, 
+    name: {
+      type: String,
       required: true
-    }, 
+    },
+    location: {
+      type: String,
+      required: true
+    },
+    image: {
+      type: String,
+      required: true
+    },
+    latitude: {
+      type: Number,
+      required: true
+    },
+    longitude: {
+      type: Number,
+      required: true
+    },
+    address: {
+      type: String,
+      required: false
+    },
     rooms: [RoomSchema],
   },
   { timestamps: true }

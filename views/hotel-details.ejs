@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= hotel.name %> - Hotel Details</title>
+
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background-color: #f3f6f9;
+        margin: 0;
+        padding: 0;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #0f3460, #1a4d8f);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        margin: 0;
+        font-size: 2.5em;
+      }
+
+      .header p {
+        margin: 10px 0 0 0;
+        font-size: 1.2em;
+        opacity: 0.9;
+      }
+
+      /* Currency Selector Styles */
+      .currency-selector {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .currency-selector label {
+        color: white;
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      .currency-selector select {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+        background: white;
+        color: #0f3460;
+        cursor: pointer;
+      }
+
+      .content {
+        padding: 30px;
+      }
+
+      .hotel-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+
+      .hotel-image {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .info-section {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 15px;
+        border-left: 4px solid #0f3460;
+      }
+
+      .info-section h3 {
+        margin: 0 0 15px 0;
+        color: #0f3460;
+        font-size: 1.3em;
+      }
+
+      .info-section p {
+        margin: 8px 0;
+        line-height: 1.6;
+      }
+
+      .directions-btn {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        text-decoration: none;
+        padding: 12px 25px;
+        border-radius: 25px;
+        font-size: 1em;
+        display: inline-block;
+        margin-top: 15px;
+        transition: all 0.3s ease;
+      }
+
+      .directions-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+      }
+
+      .rooms-section {
+        margin-top: 20px;
+      }
+
+      .rooms-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 25px;
+        margin-top: 20px;
+      }
+
+      .room-card {
+        background: #f9f9f9;
+        padding: 25px;
+        border-radius: 15px;
+        border: 1px solid #ddd;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+      }
+
+      .room-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      .room-card h4 {
+        margin: 0 0 15px 0;
+        color: #0f3460;
+        font-size: 1.3em;
+        border-bottom: 2px solid #0f3460;
+        padding-bottom: 10px;
+      }
+
+      .room-features {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin: 15px 0;
+      }
+
+      .room-features p {
+        margin: 5px 0;
+        color: #666;
+        font-size: 0.95em;
+      }
+
+      .capacity-badge {
+        background: #e8f4fd;
+        color: #0f3460;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        font-weight: bold;
+        display: inline-block;
+        margin: 10px 0;
+      }
+
+      .price {
+        font-size: 1.4em;
+        font-weight: bold;
+        color: #28a745;
+        margin: 15px 0;
+        text-align: center;
+        background: #e8f5e8;
+        padding: 10px;
+        border-radius: 10px;
+      }
+
+      .book-btn {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        border: none;
+        padding: 15px 25px;
+        border-radius: 25px;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 15px;
+      }
+
+      .book-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+      }
+
+      .book-btn:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .login-btn {
+        background: #3498db;
+        color: white;
+        text-decoration: none;
+        padding: 15px 25px;
+        border-radius: 25px;
+        font-size: 1.1em;
+        display: inline-block;
+        text-align: center;
+        transition: all 0.3s ease;
+        width: calc(100% - 50px);
+        margin-top: 15px;
+      }
+
+      .login-btn:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+      }
+
+      .back-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: rgba(15, 52, 96, 0.9);
+        color: white;
+        text-decoration: none;
+        padding: 12px 20px;
+        border-radius: 25px;
+        font-size: 1em;
+        transition: all 0.3s ease;
+        z-index: 1000;
+      }
+
+      .back-btn:hover {
+        background: rgba(15, 52, 96, 1);
+        transform: translateY(-2px);
+      }
+
+      .availability-status {
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.9em;
+        display: inline-block;
+        margin: 5px 0;
+      }
+
+      .available {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .limited {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .sold-out {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      @media (max-width: 768px) {
+        .hotel-info {
+          grid-template-columns: 1fr;
+        }
+
+        .content {
+          padding: 20px;
+        }
+
+        .header {
+          padding: 20px;
+        }
+
+        .header h1 {
+          font-size: 2em;
+        }
+
+        .rooms-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a href="/hotels" class="back-btn">← Back to Hotels</a>
+
+    <div class="container">
+      <div class="header">
+        <h1><%= hotel.name %></h1>
+        <p><%= hotel.location %></p>
+
+        <!-- Currency Selector -->
+        <div class="currency-selector">
+          <label for="currency">💱 View prices in:</label>
+          <select id="currency">
+            <option value="INR" selected>INR (₹)</option>
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="hotel-info">
+          <img
+            src="<%= hotel.image %>"
+            alt="<%= hotel.name %>"
+            class="hotel-image"
+          />
+
+          <div class="info-section">
+            <h3>📍 Location Details</h3>
+            <p><strong>Address:</strong> <%= hotel.address %></p>
+            <p><strong>City:</strong> <%= hotel.location %></p>
+
+            <a href="/hotel/<%= hotel._id %>/map" class="directions-btn">
+              🗺️ View on Map
+            </a>
+          </div>
+        </div>
+
+        <div class="rooms-section">
+          <div class="info-section">
+            <h3>🏨 Available Rooms</h3>
+            <div class="rooms-grid">
+              <% hotel.rooms.forEach(room => { %>
+              <div class="room-card">
+                <h4><%= room.type %></h4>
+
+                <div class="room-features">
+                  <p><%= room.ac ? "✅ AC Room" : "❌ Non-AC Room" %></p>
+                  <p>
+                    <strong>Capacity:</strong> <%= room.capacity %> <%=
+                    room.capacity === 1 ? 'person' : 'people' %>
+                  </p>
+                </div>
+
+                <div class="capacity-badge"><%= room.capacity %> Seater</div>
+
+                <% let statusClass = 'available'; let statusText = 'Available';
+                if (room.available === 0) { statusClass = 'sold-out'; statusText
+                = 'Sold Out'; } else if (room.available <= 2) { statusClass =
+                'limited'; statusText = `Only ${room.available} left`; } else {
+                statusText = `${room.available} rooms available`; } %>
+
+                <div class="availability-status <%= statusClass %>">
+                  <%= statusText %>
+                </div>
+
+                <div class="price" data-base="<%= room.price %>">
+                  ₹<%= room.price.toLocaleString() %> / night
+                </div>
+                <div
+                  class="converted-price"
+                  style="font-size: 0.9em; color: #666; margin-top: 5px"
+                ></div>
+
+                <% if (user) { %> <% if (room.available > 0) { %>
+                <form action="/api/bookings" method="POST">
+                  <input
+                    type="hidden"
+                    name="hotelId"
+                    value="<%= hotel._id %>"
+                  />
+                  <input
+                    type="hidden"
+                    name="roomType"
+                    value="<%= room.type %>"
+                  />
+                  <input type="hidden" name="userId" value="<%= user._id %>" />
+                  <button
+                    type="submit"
+                    class="book-btn"
+                    data-base="<%= room.price %>"
+                  >
+                    <span class="btn-text"
+                      >Book Now - ₹<%= room.price.toLocaleString() %></span
+                    >
+                  </button>
+                </form>
+                <% } else { %>
+                <button class="book-btn" disabled>Sold Out</button>
+                <% } %> <% } else { %>
+                <!-- Guest Booking Form -->
+                <% if (room.available > 0) { %>
+                <div style="margin-top: 15px">
+                  <form
+                    action="/api/bookings"
+                    method="POST"
+                    style="
+                      background: #f0f8ff;
+                      padding: 15px;
+                      border-radius: 10px;
+                      border: 1px solid #0f3460;
+                    "
+                  >
+                    <h5
+                      style="
+                        margin: 0 0 10px 0;
+                        color: #0f3460;
+                        text-align: center;
+                      "
+                    >
+                      📝 Book as Guest
+                    </h5>
+
+                    <input
+                      type="hidden"
+                      name="hotelId"
+                      value="<%= hotel._id %>"
+                    />
+                    <input
+                      type="hidden"
+                      name="roomType"
+                      value="<%= room.type %>"
+                    />
+
+                    <div style="margin-bottom: 10px">
+                      <input
+                        type="text"
+                        name="guestName"
+                        placeholder="Full Name"
+                        required
+                        style="
+                          width: 100%;
+                          padding: 8px;
+                          border: 1px solid #ddd;
+                          border-radius: 5px;
+                          box-sizing: border-box;
+                        "
+                      />
+                    </div>
+
+                    <div style="margin-bottom: 10px">
+                      <input
+                        type="email"
+                        name="guestEmail"
+                        placeholder="Email Address"
+                        required
+                        style="
+                          width: 100%;
+                          padding: 8px;
+                          border: 1px solid #ddd;
+                          border-radius: 5px;
+                          box-sizing: border-box;
+                        "
+                      />
+                    </div>
+
+                    <div style="margin-bottom: 15px">
+                      <input
+                        type="tel"
+                        name="guestPhone"
+                        placeholder="Phone Number"
+                        required
+                        style="
+                          width: 100%;
+                          padding: 8px;
+                          border: 1px solid #ddd;
+                          border-radius: 5px;
+                          box-sizing: border-box;
+                        "
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      class="book-btn"
+                      data-base="<%= room.price %>"
+                      style="margin-top: 0"
+                    >
+                      <span class="btn-text"
+                        >Book as Guest - ₹<%= room.price.toLocaleString()
+                        %></span
+                      >
+                    </button>
+                  </form>
+
+                  <div style="text-align: center; margin-top: 10px">
+                    <a
+                      href="/login"
+                      style="
+                        color: #0f3460;
+                        text-decoration: none;
+                        font-size: 0.9em;
+                      "
+                    >
+                      Already have an account? Login here
+                    </a>
+                  </div>
+                </div>
+                <% } else { %>
+                <button class="book-btn" disabled>Sold Out</button>
+                <% } %> <% } %>
+              </div>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Currency symbols
+      const currencySymbols = {
+        INR: "₹",
+        USD: "$",
+        EUR: "€",
+        GBP: "£",
+      };
+
+      // Live exchange rates (fetched from API)
+      let rates = {
+        INR: { symbol: "₹", rate: 1 },
+        USD: { symbol: "$", rate: 0.012 },
+        EUR: { symbol: "€", rate: 0.011 },
+        GBP: { symbol: "£", rate: 0.0096 },
+      };
+
+      const currencySelector = document.getElementById("currency");
+
+      // Fetch live exchange rates
+      async function fetchExchangeRates() {
+        try {
+          const response = await fetch("/api/currency/rates?base=INR");
+          const data = await response.json();
+
+          if (data.rates) {
+            rates = {
+              INR: { symbol: currencySymbols.INR, rate: 1 },
+              USD: {
+                symbol: currencySymbols.USD,
+                rate: data.rates.USD || 0.012,
+              },
+              EUR: {
+                symbol: currencySymbols.EUR,
+                rate: data.rates.EUR || 0.011,
+              },
+              GBP: {
+                symbol: currencySymbols.GBP,
+                rate: data.rates.GBP || 0.0096,
+              },
+            };
+
+            console.log(
+              "Exchange rates loaded:",
+              rates,
+              "Source:",
+              data.source
+            );
+          }
+        } catch (error) {
+          console.warn(
+            "Failed to fetch live rates, using fallback rates:",
+            error
+          );
+        }
+      }
+
+      // Load exchange rates on page load
+      fetchExchangeRates();
+
+      currencySelector.addEventListener("change", () => {
+        const selectedCurrency = currencySelector.value;
+        const selectedRate = rates[selectedCurrency];
+
+        // Update all room prices
+        document.querySelectorAll(".price").forEach((priceEl) => {
+          const basePrice = parseFloat(priceEl.dataset.base);
+          const convertedPrice = (basePrice * selectedRate.rate).toFixed(2);
+          priceEl.textContent = `${selectedRate.symbol}${parseFloat(
+            convertedPrice
+          ).toLocaleString()} / night`;
+        });
+
+        // Update converted price displays
+        document
+          .querySelectorAll(".converted-price")
+          .forEach((convertedEl, index) => {
+            const priceEl = document.querySelectorAll(".price")[index];
+            const basePrice = parseFloat(priceEl.dataset.base);
+
+            if (selectedCurrency !== "INR") {
+              const convertedPrice = (basePrice * selectedRate.rate).toFixed(2);
+              convertedEl.textContent = `≈ ${selectedRate.symbol}${parseFloat(
+                convertedPrice
+              ).toLocaleString()}`;
+              convertedEl.style.display = "block";
+            } else {
+              convertedEl.style.display = "none";
+            }
+          });
+
+        // Update booking button prices
+        document.querySelectorAll(".book-btn .btn-text").forEach((btnText) => {
+          const button = btnText.closest(".book-btn");
+          const basePrice = parseFloat(button.dataset.base);
+          const convertedPrice = (basePrice * selectedRate.rate).toFixed(2);
+
+          // Check if it's a user booking or guest booking button
+          const isGuestBooking = btnText.textContent.includes("Book as Guest");
+          const buttonText = isGuestBooking ? "Book as Guest" : "Book Now";
+
+          btnText.textContent = `${buttonText} - ${
+            selectedRate.symbol
+          }${parseFloat(convertedPrice).toLocaleString()}`;
+        });
+      });
+
+      // Initialize with INR (default)
+      currencySelector.dispatchEvent(new Event("change"));
+    </script>
+  </body>
+</html>

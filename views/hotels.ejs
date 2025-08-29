@@ -155,48 +155,45 @@
         <p><strong>Location:</strong> <%= hotel.location %></p>
         <p class="weather" id="weather-<%= hotel._id %>">Loading weather...</p>
 
-        <details style="padding: 5%">
-          <summary style="cursor: pointer">View Rooms</summary>
-          <div class="room-options">
-            <% hotel.rooms.forEach(room => { %>
-            <div class="room">
-              <h3><%= room.type %></h3>
+        <div style="margin: 15px 0; text-align: center">
+          <a
+            href="/hotel/<%= hotel._id %>"
+            style="
+              background: linear-gradient(135deg, #0f3460, #1a4d8f);
+              color: white;
+              text-decoration: none;
+              padding: 10px 20px;
+              border-radius: 25px;
+              font-size: 0.9em;
+              display: inline-block;
+              transition: all 0.3s ease;
+              margin: 5px;
+            "
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(15, 52, 96, 0.3)'"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+          >
+            🏨 View Details
+          </a>
 
-              <p>
-                Price:
-                <span class="price" data-base="<%= room.price %>">
-                  ₹<%= room.price %>
-                </span>
-                / night
-              </p>
-
-              <p><%= room.ac ? "AC Room" : "Non-AC Room" %></p>
-              <p>Available: <%= room.available %></p>
-
-              <% if (user) { %>
-              <form action="/api/bookings" method="POST">
-                <input type="hidden" name="hotelId" value="<%= hotel._id %>" />
-                <input type="hidden" name="roomType" value="<%= room.type %>" />
-                <input type="hidden" name="userId" value="<%= user._id %>" />
-                <button type="submit">Book Now</button>
-              </form>
-              <% } else { %>
-              <p>
-                <a
-                  href="/login"
-                  class="login-btn"
-                  onmouseover="this.style.backgroundColor='#2980b9'"
-                  onmouseout="this.style.backgroundColor='#3498db'"
-                >
-                  Login to Book
-                </a>
-              </p>
-              <% } %>
-            </div>
-
-            <% }) %>
-          </div>
-        </details>
+          <a
+            href="/hotel/<%= hotel._id %>/map"
+            style="
+              background: linear-gradient(135deg, #28a745, #20c997);
+              color: white;
+              text-decoration: none;
+              padding: 10px 20px;
+              border-radius: 25px;
+              font-size: 0.9em;
+              display: inline-block;
+              transition: all 0.3s ease;
+              margin: 5px;
+            "
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(40, 167, 69, 0.3)'"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+          >
+            🗺️ View Map
+          </a>
+        </div>
       </div>
       <% }) %>
     </div>
@@ -243,15 +240,58 @@
           });
         });
 
-      // ✅ Currency conversion (static rates version)
-      const rates = {
+      // ✅ Currency conversion with live API rates
+      const currencySymbols = {
+        INR: "₹",
+        USD: "$",
+        EUR: "€",
+        GBP: "£",
+      };
+
+      // Live exchange rates (fetched from API)
+      let rates = {
         INR: { symbol: "₹", rate: 1 },
-        USD: { symbol: "$", rate: 0.012 }, // Example rate
+        USD: { symbol: "$", rate: 0.012 },
         EUR: { symbol: "€", rate: 0.011 },
         GBP: { symbol: "£", rate: 0.0096 },
       };
 
-      const selector = document.getElementById("currency"); // 🔥 fixed ID
+      const selector = document.getElementById("currency");
+
+      // Fetch live exchange rates
+      async function fetchExchangeRates() {
+        try {
+          const response = await fetch("/api/currency/rates?base=INR");
+          const data = await response.json();
+
+          if (data.rates) {
+            rates = {
+              INR: { symbol: currencySymbols.INR, rate: 1 },
+              USD: {
+                symbol: currencySymbols.USD,
+                rate: data.rates.USD || 0.012,
+              },
+              EUR: {
+                symbol: currencySymbols.EUR,
+                rate: data.rates.EUR || 0.011,
+              },
+              GBP: {
+                symbol: currencySymbols.GBP,
+                rate: data.rates.GBP || 0.0096,
+              },
+            };
+            console.log("Live exchange rates loaded:", rates);
+          }
+        } catch (error) {
+          console.warn(
+            "Failed to fetch live rates, using fallback rates:",
+            error
+          );
+        }
+      }
+
+      // Load exchange rates on page load
+      fetchExchangeRates();
 
       if (selector) {
         selector.addEventListener("change", () => {

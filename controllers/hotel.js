@@ -12,4 +12,34 @@ const getAllHotels = async (req, res) => {
   }
 };
 
-module.exports = { getAllHotels };
+const getHotelDetails = async (req, res) => {
+  try {
+    const hotel = await Hotel.findById(req.params.id);
+
+    if (!hotel) {
+      return res.status(404).send("Hotel not found");
+    }
+
+    res.render('hotel-details', { hotel, user: req.session.user });
+  } catch (err) {
+    console.error("Error fetching hotel details:", err);
+    res.status(500).send("Something went wrong");
+  }
+};
+
+const getHotelMap = async (req, res) => {
+  try {
+    const hotel = await Hotel.findById(req.params.id);
+
+    if (!hotel) {
+      return res.status(404).send("Hotel not found");
+    }
+
+    res.render('hotel-map', { hotel, user: req.session.user });
+  } catch (err) {
+    console.error("Error fetching hotel map:", err);
+    res.status(500).send("Something went wrong");
+  }
+};
+
+module.exports = { getAllHotels, getHotelDetails, getHotelMap };

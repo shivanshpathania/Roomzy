@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Booking Success</title>
+
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
     <style>
       body {
         font-family: "Segoe UI", sans-serif;
@@ -60,6 +67,75 @@
         border-radius: 6px;
         border: 1px solid #ccc;
       }
+
+      /* Map styling */
+      .map-section {
+        margin-top: 30px;
+        text-align: left;
+      }
+
+      .map-container {
+        background: #f9f9f9;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        margin-top: 15px;
+      }
+
+      .map-header {
+        background: #0f3460;
+        color: white;
+        padding: 15px 20px;
+        font-weight: bold;
+        font-size: 1.1em;
+        text-align: center;
+      }
+
+      #directionsMap {
+        height: 400px;
+        width: 100%;
+      }
+
+      .directions-info {
+        background: #e8f4fd;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 15px;
+        text-align: left;
+      }
+
+      .directions-info h4 {
+        margin: 0 0 10px 0;
+        color: #0f3460;
+      }
+
+      .directions-info p {
+        margin: 5px 0;
+        color: #666;
+      }
+
+      .location-btn {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-size: 0.9em;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .location-btn:hover {
+        background: #218838;
+        transform: translateY(-2px);
+      }
+
+      .location-btn:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+        transform: none;
+      }
     </style>
   </head>
   <body>
@@ -75,6 +151,23 @@
         / night
       </p>
 
+      <% if (booking.isGuestBooking) { %>
+      <div
+        style="
+          background: #e8f4fd;
+          padding: 15px;
+          border-radius: 10px;
+          margin: 15px 0;
+          text-align: left;
+        "
+      >
+        <h3 style="margin: 0 0 10px 0; color: #0f3460">📝 Guest Details</h3>
+        <p><strong>Name:</strong> <%= booking.guestName %></p>
+        <p><strong>Email:</strong> <%= booking.guestEmail %></p>
+        <p><strong>Phone:</strong> <%= booking.guestPhone %></p>
+      </div>
+      <% } %>
+
       <!-- Currency Dropdown -->
       <div class="currency-box">
         <label for="currency">Show price in: </label>
@@ -86,12 +179,56 @@
         </select>
       </div>
 
+      <!-- Directions Map Section -->
+      <div class="map-section">
+        <div class="map-container">
+          <div class="map-header">🗺️ Directions to Your Hotel</div>
+          <div id="directionsMap"></div>
+        </div>
+
+        <div class="directions-info">
+          <h4>📍 Hotel Location</h4>
+          <p><strong><%= hotel.name %></strong></p>
+          <p><%= hotel.address %></p>
+          <p><%= hotel.location %></p>
+
+          <button id="getDirections" class="location-btn">
+            📍 Get Directions from My Location
+          </button>
+
+          <div id="routeInfo" style="margin-top: 15px; display: none">
+            <h4>🚗 Route Information</h4>
+            <p id="distance"></p>
+            <p id="duration"></p>
+          </div>
+        </div>
+      </div>
+
+      <% if (booking.isGuestBooking) { %>
+      <a href="/hotels" class="btn">Book Another Hotel</a>
+      <p style="margin-top: 15px; font-size: 0.9em; color: #666">
+        💡 <a href="/signup" style="color: #0f3460">Create an account</a> to
+        track your bookings and get exclusive offers!
+      </p>
+      <% } else { %>
       <a href="/user/bookings" class="btn">View Your Bookings</a>
+      <% } %>
     </div>
 
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <script>
-      // Example static rates (replace with API later)
-      const rates = {
+      // Currency symbols
+      const currencySymbols = {
+        INR: "₹",
+        USD: "$",
+        EUR: "€",
+        GBP: "£",
+      };
+
+      // Live exchange rates (fetched from API)
+      let rates = {
         INR: { symbol: "₹", rate: 1 },
         USD: { symbol: "$", rate: 0.012 },
         EUR: { symbol: "€", rate: 0.011 },
@@ -100,6 +237,29 @@
 
       const selector = document.getElementById("currency");
 
+      // Fetch live exchange rates
+      async function fetchExchangeRates() {
+        try {
+          const response = await fetch('/api/currency/rates?base=INR');
+          const data = await response.json();
+
+          if (data.rates) {
+            rates = {
+              INR: { symbol: currencySymbols.INR, rate: 1 },
+              USD: { symbol: currencySymbols.USD, rate: data.rates.USD || 0.012 },
+              EUR: { symbol: currencySymbols.EUR, rate: data.rates.EUR || 0.011 },
+              GBP: { symbol: currencySymbols.GBP, rate: data.rates.GBP || 0.0096 },
+            };
+            console.log('Live exchange rates loaded:', rates);
+          }
+        } catch (error) {
+          console.warn('Failed to fetch live rates, using fallback rates:', error);
+        }
+      }
+
+      // Load exchange rates on page load
+      fetchExchangeRates();
+
       selector.addEventListener("change", () => {
         const selected = selector.value;
         const priceEl = document.querySelector(".price");
@@ -107,6 +267,131 @@
         const base = parseFloat(priceEl.dataset.base); // base INR price
         const converted = (base * rates[selected].rate).toFixed(2);
         priceEl.textContent = `${rates[selected].symbol}${converted}`;
+      });
+
+      // Map and Directions functionality
+      const hotelLat = <%= hotel.latitude %>;
+      const hotelLng = <%= hotel.longitude %>;
+
+      // Initialize the map centered on hotel
+      const map = L.map('directionsMap').setView([hotelLat, hotelLng], 13);
+
+      // Add OpenStreetMap tiles
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      // Add hotel marker
+      const hotelIcon = L.divIcon({
+          html: '🏨',
+          iconSize: [30, 30],
+          className: 'custom-div-icon'
+      });
+
+      const hotelMarker = L.marker([hotelLat, hotelLng], { icon: hotelIcon })
+          .addTo(map)
+          .bindPopup(`
+              <div style="text-align: center; padding: 10px;">
+                  <h3 style="margin: 0 0 10px 0; color: #0f3460;"><%= hotel.name %></h3>
+                  <p style="margin: 5px 0; font-weight: bold;"><%= hotel.address %></p>
+                  <p style="margin: 5px 0; color: #666;"><%= hotel.location %></p>
+              </div>
+          `);
+
+      let userMarker = null;
+      let routePolyline = null;
+
+      // Get directions button functionality
+      document.getElementById('getDirections').addEventListener('click', function() {
+          const button = this;
+          button.disabled = true;
+          button.textContent = '📍 Getting your location...';
+
+          if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(
+                  function(position) {
+                      const userLat = position.coords.latitude;
+                      const userLng = position.coords.longitude;
+
+                      // Add user marker
+                      const userIcon = L.divIcon({
+                          html: '📍',
+                          iconSize: [25, 25],
+                          className: 'custom-div-icon'
+                      });
+
+                      if (userMarker) {
+                          map.removeLayer(userMarker);
+                      }
+
+                      userMarker = L.marker([userLat, userLng], { icon: userIcon })
+                          .addTo(map)
+                          .bindPopup('📍 Your Location');
+
+                      // Get route using OSRM
+                      button.textContent = '🗺️ Getting directions...';
+
+                      fetch(`https://router.project-osrm.org/route/v1/driving/${userLng},${userLat};${hotelLng},${hotelLat}?overview=full&geometries=geojson`)
+                          .then(response => response.json())
+                          .then(data => {
+                              if (data.routes && data.routes.length > 0) {
+                                  const route = data.routes[0];
+
+                                  // Remove existing route
+                                  if (routePolyline) {
+                                      map.removeLayer(routePolyline);
+                                  }
+
+                                  // Add route polyline
+                                  const coordinates = route.geometry.coordinates.map(coord => [coord[1], coord[0]]);
+                                  routePolyline = L.polyline(coordinates, {
+                                      color: '#0f3460',
+                                      weight: 5,
+                                      opacity: 0.8
+                                  }).addTo(map);
+
+                                  // Fit map to show both markers and route
+                                  const group = new L.featureGroup([userMarker, hotelMarker, routePolyline]);
+                                  map.fitBounds(group.getBounds().pad(0.1));
+
+                                  // Show route information
+                                  const distance = (route.distance / 1000).toFixed(1);
+                                  const duration = Math.round(route.duration / 60);
+
+                                  document.getElementById('distance').textContent = `Distance: ${distance} km`;
+                                  document.getElementById('duration').textContent = `Estimated time: ${duration} minutes`;
+                                  document.getElementById('routeInfo').style.display = 'block';
+
+                                  button.textContent = '✅ Directions loaded!';
+                                  button.style.background = '#28a745';
+                              } else {
+                                  throw new Error('No route found');
+                              }
+                          })
+                          .catch(error => {
+                              console.error('Error getting directions:', error);
+                              button.textContent = '❌ Directions unavailable';
+                              button.style.background = '#dc3545';
+
+                              // Still fit map to show both markers
+                              if (userMarker) {
+                                  const group = new L.featureGroup([userMarker, hotelMarker]);
+                                  map.fitBounds(group.getBounds().pad(0.2));
+                              }
+                          });
+                  },
+                  function(error) {
+                      console.error('Geolocation error:', error);
+                      button.textContent = '❌ Location access denied';
+                      button.style.background = '#dc3545';
+                      button.disabled = false;
+                  }
+              );
+          } else {
+              button.textContent = '❌ Geolocation not supported';
+              button.style.background = '#dc3545';
+              button.disabled = false;
+          }
       });
     </script>
   </body>

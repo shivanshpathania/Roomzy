@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= hotel.name %> - Location Map</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background-color: #f3f6f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f3460, #1a4d8f);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .map-container {
+            background: #f9f9f9;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .map-header {
+            background: #0f3460;
+            color: white;
+            padding: 15px 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        #hotelMap {
+            height: 500px;
+            width: 100%;
+        }
+
+        .info-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #0f3460;
+            margin-top: 20px;
+        }
+
+        .info-section h3 {
+            margin: 0 0 15px 0;
+            color: #0f3460;
+            font-size: 1.3em;
+        }
+
+        .info-section p {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .directions-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1em;
+            display: inline-block;
+            margin: 15px 10px 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .directions-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(15, 52, 96, 0.9);
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-btn:hover {
+            background: rgba(15, 52, 96, 1);
+            transform: translateY(-2px);
+        }
+
+        .details-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1em;
+            display: inline-block;
+            margin: 15px 0 15px 10px;
+            transition: all 0.3s ease;
+        }
+
+        .details-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .action-buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            #hotelMap {
+                height: 400px;
+            }
+
+            .action-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .directions-btn, .details-btn {
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="/hotels" class="back-btn">← Back to Hotels</a>
+    
+    <div class="container">
+        <div class="header">
+            <h1><%= hotel.name %></h1>
+            <p>📍 Location Map</p>
+        </div>
+
+        <div class="content">
+            <div class="map-container">
+                <div class="map-header">
+                    🗺️ Hotel Location
+                </div>
+                <div id="hotelMap"></div>
+            </div>
+
+            <div class="info-section">
+                <h3>📍 Location Information</h3>
+                <p><strong>Hotel:</strong> <%= hotel.name %></p>
+                <p><strong>Address:</strong> <%= hotel.address %></p>
+                <p><strong>City:</strong> <%= hotel.location %></p>
+                
+                <div class="action-buttons">
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=<%= hotel.latitude %>,<%= hotel.longitude %>" 
+                       target="_blank" class="directions-btn">
+                        🗺️ Get Directions (Google Maps)
+                    </a>
+                    
+                    <a href="/hotel/<%= hotel._id %>" class="details-btn">
+                        🏨 View Hotel Details & Rooms
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        // Initialize the map
+        const map = L.map('hotelMap').setView([<%= hotel.latitude %>, <%= hotel.longitude %>], 15);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Add hotel marker with popup
+        const hotelMarker = L.marker([<%= hotel.latitude %>, <%= hotel.longitude %>])
+            .addTo(map)
+            .bindPopup(`
+                <div style="text-align: center; padding: 10px;">
+                    <h3 style="margin: 0 0 10px 0; color: #0f3460;"><%= hotel.name %></h3>
+                    <p style="margin: 5px 0; font-weight: bold;"><%= hotel.address %></p>
+                    <p style="margin: 5px 0; color: #666;"><%= hotel.location %></p>
+                </div>
+            `)
+            .openPopup();
+
+        // Custom hotel icon
+        const hotelIcon = L.divIcon({
+            html: '🏨',
+            iconSize: [30, 30],
+            className: 'custom-div-icon'
+        });
+        
+        hotelMarker.setIcon(hotelIcon);
+    </script>
+</body>
+</html>
