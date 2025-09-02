@@ -113,6 +113,10 @@ app.get('/user/bookings', async (req, res) => {
     }
 });
 
+app.get("/guest-booking", (req, res) => {
+    res.redirect("/hotels");  // or res.render("hotels", { user: null });
+  });
+
 app.use("/api/weather", weatherRoutes);
 app.use("/api/currency", currencyRoutes);
 

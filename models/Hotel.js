@@ -30,33 +30,26 @@ const RoomSchema = new mongoose.Schema({
   }
 });
 
-// Define the Hotel schema
 const HotelSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true
-    },
-    location: {
-      type: String,
-      required: true
-    },
-    image: {
-      type: String,
-      required: true
-    },
-    latitude: {
+    name: { type: String, required: true },
+    location: { type: String, required: true },
+    image: { type: String, required: true },
+    latitude: { type: Number, required: true },
+    longitude: { type: Number, required: true },
+    rooms: [RoomSchema],
+
+    // ⭐ Add rating
+    rating: {
       type: Number,
-      required: true
-    },
-    longitude: {
-      type: Number,
-      required: true
-    },
-    rooms: [RoomSchema] // Add the rooms property as an array of RoomSchema
+      default: 0,
+      min: 0,
+      max: 5
+    }
   },
-  { timestamps: true } // Automatically add createdAt and updatedAt timestamps
+  { timestamps: true }
 );
+
 
 const Hotel = mongoose.model("Hotel", HotelSchema);
 

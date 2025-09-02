@@ -2,67 +2,169 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Luxury Hotel Booking</title>
-  <!-- <link rel="stylesheet" href="/css/style.css"> -->
-   <style>
+  <title>Roomzy - Luxury Hotel Booking</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
     body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(to right, #6dd5ed, #2193b0);
-  color: #fff;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+      height: 100vh;
+      background: url("https://images.unsplash.com/photo-1501117716987-c8e1ecb2100d?auto=format&fit=crop&w=1920&q=80") no-repeat center center/cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      position: relative;
+    }
 
-.container {
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.4);
-  padding: 40px;
-  border-radius: 15px;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-}
+    /* Overlay */
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 0;
+    }
 
-h1 {
-  font-size: 3rem;
-  margin-bottom: 20px;
-}
+    .container {
+      text-align: center;
+      padding: 40px;
+      border-radius: 15px;
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      width: 90%;
+    }
 
-.highlight {
-  color: #ffd700;
-}
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
 
-p {
-  font-size: 1.2rem;
-  margin-bottom: 30px;
-}
+    .highlight {
+      color: #ffd700;
+    }
 
-.btn {
-  background-color: #ffd700;
-  color: #000;
-  padding: 12px 25px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: 0.3s;
-}
+    p {
+      font-size: 1.3rem;
+      margin-bottom: 25px;
+      color: #eee;
+    }
 
-.btn:hover {
-  background-color: #fff;
-  color: #2193b0;
-}
+    /* Search Bar */
+    .search-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      gap: 10px;
+    }
 
-   </style>
+    .search-container input {
+      padding: 12px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 25px;
+      width: 60%;
+      outline: none;
+    }
+
+    .search-container button {
+      background-color: #ffd700;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .search-container button:hover {
+      background-color: #fff;
+      color: #2193b0;
+    }
+
+    /* Buttons */
+    .btn {
+      background-color: #ffd700;
+      color: #000;
+      padding: 12px 25px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin: 10px;
+    }
+
+    .btn:hover {
+      background-color: #fff;
+      color: #2193b0;
+    }
+
+    /* Features Section */
+    .features {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 40px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+      width: 220px;
+      text-align: center;
+      transition: transform 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .feature-card h3 {
+      margin-bottom: 10px;
+      font-size: 1.3rem;
+      color: #ffd700;
+    }
+
+    .feature-card p {
+      font-size: 0.9rem;
+      color: #ddd;
+    }
+  </style>
 </head>
 <body class="home-page">
   <div class="container">
     <h1>Welcome to <span class="highlight">Roomzy</span></h1>
-    <a href="/user/bookings" style="color: wheat;" class="history-btn">Your Booking History</a>
-    <p>Your perfect stay is just a click away.</p>
+    <p>Find your perfect stay at the best hotels worldwide.</p>
+
+    <!-- Buttons -->
     <a href="/hotels"><button class="btn">View Hotels</button></a>
+    <a href="/user/bookings"><button class="btn">Your Booking History</button></a>
+
+    <!-- Features -->
+    <div class="features">
+      <div class="feature-card">
+        <h3>Luxury Rooms</h3>
+        <p>Book top-rated rooms with premium comfort and facilities.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Best Prices</h3>
+        <p>Get exclusive deals and offers for your perfect stay.</p>
+      </div>
+      <div class="feature-card">
+        <h3>24/7 Support</h3>
+        <p>We’re here anytime to assist you with your bookings.</p>
+      </div>
+    </div>
   </div>
 </body>
 </html>

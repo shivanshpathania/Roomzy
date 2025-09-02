@@ -4,303 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= hotel.name %> - Hotel Details</title>
-
-    <style>
-      body {
-        font-family: "Segoe UI", sans-serif;
-        background-color: #f3f6f9;
-        margin: 0;
-        padding: 0;
-        color: #333;
-      }
-
-      .container {
-        max-width: 1200px;
-        margin: 20px auto;
-        background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-      }
-
-      .header {
-        background: linear-gradient(135deg, #0f3460, #1a4d8f);
-        color: white;
-        padding: 30px;
-        text-align: center;
-      }
-
-      .header h1 {
-        margin: 0;
-        font-size: 2.5em;
-      }
-
-      .header p {
-        margin: 10px 0 0 0;
-        font-size: 1.2em;
-        opacity: 0.9;
-      }
-
-      /* Currency Selector Styles */
-      .currency-selector {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 15px;
-        border-radius: 10px;
-        margin-top: 20px;
-        text-align: center;
-      }
-
-      .currency-selector label {
-        color: white;
-        font-weight: bold;
-        margin-right: 10px;
-      }
-
-      .currency-selector select {
-        padding: 8px 12px;
-        border: none;
-        border-radius: 5px;
-        font-size: 1em;
-        background: white;
-        color: #0f3460;
-        cursor: pointer;
-      }
-
-      .content {
-        padding: 30px;
-      }
-
-      .hotel-info {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 30px;
-        margin-bottom: 30px;
-      }
-
-      .hotel-image {
-        width: 100%;
-        height: 300px;
-        object-fit: cover;
-        border-radius: 15px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-      }
-
-      .info-section {
-        background: #f9f9f9;
-        padding: 20px;
-        border-radius: 15px;
-        border-left: 4px solid #0f3460;
-      }
-
-      .info-section h3 {
-        margin: 0 0 15px 0;
-        color: #0f3460;
-        font-size: 1.3em;
-      }
-
-      .info-section p {
-        margin: 8px 0;
-        line-height: 1.6;
-      }
-
-      .directions-btn {
-        background: linear-gradient(135deg, #28a745, #20c997);
-        color: white;
-        text-decoration: none;
-        padding: 12px 25px;
-        border-radius: 25px;
-        font-size: 1em;
-        display: inline-block;
-        margin-top: 15px;
-        transition: all 0.3s ease;
-      }
-
-      .directions-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
-      }
-
-      .rooms-section {
-        margin-top: 20px;
-      }
-
-      .rooms-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 25px;
-        margin-top: 20px;
-      }
-
-      .room-card {
-        background: #f9f9f9;
-        padding: 25px;
-        border-radius: 15px;
-        border: 1px solid #ddd;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        position: relative;
-      }
-
-      .room-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
-      }
-
-      .room-card h4 {
-        margin: 0 0 15px 0;
-        color: #0f3460;
-        font-size: 1.3em;
-        border-bottom: 2px solid #0f3460;
-        padding-bottom: 10px;
-      }
-
-      .room-features {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin: 15px 0;
-      }
-
-      .room-features p {
-        margin: 5px 0;
-        color: #666;
-        font-size: 0.95em;
-      }
-
-      .capacity-badge {
-        background: #e8f4fd;
-        color: #0f3460;
-        padding: 5px 12px;
-        border-radius: 20px;
-        font-size: 0.9em;
-        font-weight: bold;
-        display: inline-block;
-        margin: 10px 0;
-      }
-
-      .price {
-        font-size: 1.4em;
-        font-weight: bold;
-        color: #28a745;
-        margin: 15px 0;
-        text-align: center;
-        background: #e8f5e8;
-        padding: 10px;
-        border-radius: 10px;
-      }
-
-      .book-btn {
-        background: linear-gradient(135deg, #28a745, #20c997);
-        color: white;
-        border: none;
-        padding: 15px 25px;
-        border-radius: 25px;
-        font-size: 1.1em;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        width: 100%;
-        margin-top: 15px;
-      }
-
-      .book-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
-      }
-
-      .book-btn:disabled {
-        background: #6c757d;
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-      }
-
-      .login-btn {
-        background: #3498db;
-        color: white;
-        text-decoration: none;
-        padding: 15px 25px;
-        border-radius: 25px;
-        font-size: 1.1em;
-        display: inline-block;
-        text-align: center;
-        transition: all 0.3s ease;
-        width: calc(100% - 50px);
-        margin-top: 15px;
-      }
-
-      .login-btn:hover {
-        background: #2980b9;
-        transform: translateY(-2px);
-      }
-
-      .back-btn {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        background: rgba(15, 52, 96, 0.9);
-        color: white;
-        text-decoration: none;
-        padding: 12px 20px;
-        border-radius: 25px;
-        font-size: 1em;
-        transition: all 0.3s ease;
-        z-index: 1000;
-      }
-
-      .back-btn:hover {
-        background: rgba(15, 52, 96, 1);
-        transform: translateY(-2px);
-      }
-
-      .availability-status {
-        font-weight: bold;
-        padding: 5px 10px;
-        border-radius: 15px;
-        font-size: 0.9em;
-        display: inline-block;
-        margin: 5px 0;
-      }
-
-      .available {
-        background: #d4edda;
-        color: #155724;
-      }
-
-      .limited {
-        background: #fff3cd;
-        color: #856404;
-      }
-
-      .sold-out {
-        background: #f8d7da;
-        color: #721c24;
-      }
-
-      @media (max-width: 768px) {
-        .hotel-info {
-          grid-template-columns: 1fr;
-        }
-
-        .content {
-          padding: 20px;
-        }
-
-        .header {
-          padding: 20px;
-        }
-
-        .header h1 {
-          font-size: 2em;
-        }
-
-        .rooms-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="/hotel-details.css">
   </head>
   <body>
-    <a href="/hotels" class="back-btn">← Back to Hotels</a>
 
+    <a href="/hotels" class="back-btn">← Back to Hotels</a>
     <div class="container">
       <div class="header">
         <h1><%= hotel.name %></h1>
@@ -337,20 +45,36 @@
           </div>
         </div>
 
-
-  <!-- Hotel Images Gallery -->
-  <div style="max-width: 1200px; margin: 20px auto; text-align: center;">
-    <h2 style="color: #0f3460;"><%= hotel.name %> - Images</h2>
-    <% if (images.length > 0) { %>
-      <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-        <% images.forEach(image => { %>
-          <img src="<%= image %>" alt="Hotel Image" style="width: 300px; height: 200px; object-fit: cover; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-        <% }) %>
-      </div>
-    <% } else { %>
-      <p>No images available for this hotel.</p>
-    <% } %>
-  </div>
+        <!-- Hotel Images Gallery -->
+        <div style="max-width: 1200px; margin: 20px auto; text-align: center">
+          <h2 style="color: #0f3460"><%= hotel.name %> - Images</h2>
+          <% if (images.length > 0) { %>
+          <div
+            style="
+              display: flex;
+              gap: 10px;
+              justify-content: center;
+              flex-wrap: wrap;
+            "
+          >
+            <% images.forEach(image => { %>
+            <img
+              src="<%= image %>"
+              alt="Hotel Image"
+              style="
+                width: 300px;
+                height: 200px;
+                object-fit: cover;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+              "
+            />
+            <% }) %>
+          </div>
+          <% } else { %>
+          <p>No images available for this hotel.</p>
+          <% } %>
+        </div>
 
         <div class="rooms-section">
           <div class="info-section">
@@ -358,182 +82,96 @@
             <div class="rooms-grid">
               <% hotel.rooms.forEach(room => { %>
               <div class="room-card">
-                <h4><%= room.type %></h4>
-
-                <div class="room-features">
-                  <p><%= room.ac ? "✅ AC Room" : "❌ Non-AC Room" %></p>
-                  <p>
-                    <strong>Capacity:</strong> <%= room.capacity %> <%=
-                    room.capacity === 1 ? 'person' : 'people' %>
-                  </p>
-                </div>
-
-                <div class="capacity-badge"><%= room.capacity %> Seater</div>
-
-                <% let statusClass = 'available'; let statusText = 'Available';
-                if (room.available === 0) { statusClass = 'sold-out'; statusText
-                = 'Sold Out'; } else if (room.available <= 2) { statusClass =
-                'limited'; statusText = `Only ${room.available} left`; } else {
-                statusText = `${room.available} rooms available`; } %>
-
-                <div class="availability-status <%= statusClass %>">
-                  <%= statusText %>
-                </div>
-
-                <div class="price" data-base="<%= room.price %>">
-                  ₹<%= room.price.toLocaleString() %> / night
-                </div>
-                <div
-                  class="converted-price"
-                  style="font-size: 0.9em; color: #666; margin-top: 5px"
-                ></div>
-
-                <% if (user) { %> <% if (room.available > 0) { %>
-                <form action="/api/bookings" method="POST">
-                  <input
-                    type="hidden"
-                    name="hotelId"
-                    value="<%= hotel._id %>"
-                  />
-                  <input
-                    type="hidden"
-                    name="roomType"
-                    value="<%= room.type %>"
-                  />
-                  <input type="hidden" name="userId" value="<%= user._id %>" />
-                  <button
-                    type="submit"
-                    class="book-btn"
-                    data-base="<%= room.price %>"
-                  >
-                    <span class="btn-text"
-                      >Book Now - ₹<%= room.price.toLocaleString() %></span
-                    >
-                  </button>
-                </form>
-                <% } else { %>
-                <button class="book-btn" disabled>Sold Out</button>
-                <% } %> <% } else { %>
-                <!-- Guest Booking Form -->
-                <% if (room.available > 0) { %>
-                <div style="margin-top: 15px">
-                  <form
-                    action="/api/bookings"
-                    method="POST"
-                    style="
-                      background: #f0f8ff;
-                      padding: 15px;
-                      border-radius: 10px;
-                      border: 1px solid #0f3460;
-                    "
-                  >
-                    <h5
-                      style="
-                        margin: 0 0 10px 0;
-                        color: #0f3460;
-                        text-align: center;
-                      "
-                    >
-                      📝 Book as Guest
-                    </h5>
-
-                    <input
-                      type="hidden"
-                      name="hotelId"
-                      value="<%= hotel._id %>"
-                    />
-                    <input
-                      type="hidden"
-                      name="roomType"
-                      value="<%= room.type %>"
-                    />
-
-                    <div style="margin-bottom: 10px">
-                      <input
-                        type="text"
-                        name="guestName"
-                        placeholder="Full Name"
-                        required
-                        style="
-                          width: 100%;
-                          padding: 8px;
-                          border: 1px solid #ddd;
-                          border-radius: 5px;
-                          box-sizing: border-box;
-                        "
-                      />
-                    </div>
-
-                    <div style="margin-bottom: 10px">
-                      <input
-                        type="email"
-                        name="guestEmail"
-                        placeholder="Email Address"
-                        required
-                        style="
-                          width: 100%;
-                          padding: 8px;
-                          border: 1px solid #ddd;
-                          border-radius: 5px;
-                          box-sizing: border-box;
-                        "
-                      />
-                    </div>
-
-                    <div style="margin-bottom: 15px">
-                      <input
-                        type="tel"
-                        name="guestPhone"
-                        placeholder="Phone Number"
-                        required
-                        style="
-                          width: 100%;
-                          padding: 8px;
-                          border: 1px solid #ddd;
-                          border-radius: 5px;
-                          box-sizing: border-box;
-                        "
-                      />
-                    </div>
-
-                    <button
-                      type="submit"
-                      class="book-btn"
-                      data-base="<%= room.price %>"
-                      style="margin-top: 0"
-                    >
-                      <span class="btn-text"
-                        >Book as Guest - ₹<%= room.price.toLocaleString()
-                        %></span
-                      >
-                    </button>
-                  </form>
-
-                  <div style="text-align: center; margin-top: 10px">
-                    <a
-                      href="/login"
-                      style="
-                        color: #0f3460;
-                        text-decoration: none;
-                        font-size: 0.9em;
-                      "
-                    >
-                      Already have an account? Login here
-                    </a>
+                <div class="room-details">
+                  <h4><%= room.type %></h4>
+        
+                  <div class="badges">
+                    <span class="badge <%= room.ac ? 'ac' : 'non-ac' %>">
+                      <%= room.ac ? "AC" : "Non-AC" %>
+                    </span>
+                    <span class="badge capacity">
+                      👥 <%= room.capacity %> <%= room.capacity === 1 ? 'person' : 'people' %>
+                    </span>
                   </div>
+        
+                  <% 
+                    let statusClass = 'available'; 
+                    let statusText = 'Available';
+                    if (room.available === 0) { 
+                      statusClass = 'sold-out'; 
+                      statusText = 'Sold Out'; 
+                    } else if (room.available <= 2) { 
+                      statusClass = 'limited'; 
+                      statusText = `Only ${room.available} left`; 
+                    } else { 
+                      statusText = `${room.available} rooms available`; 
+                    } 
+                  %>
+        
+                  <div class="availability <%= statusClass %>">
+                    <%= statusText %>
+                  </div>
+        
+                  <div class="price" data-base="<%= room.price %>">
+                    ₹<%= room.price.toLocaleString() %> / night
+                  </div>
+                  <div class="converted-price"></div>
+        
+                  <% if (room.available > 0) { %>
+                    <form action="/api/bookings" method="POST" class="booking-form">
+                      <input type="hidden" name="hotelId" value="<%= hotel._id %>" />
+                      <input type="hidden" name="roomType" value="<%= room.type %>" />
+                    
+                      <% if (user) { %>
+                        <!-- Logged in user -->
+                        <input type="hidden" name="userId" value="<%= user._id %>" />
+                      <% } else { %>
+                        <!-- Guest booking fields -->
+                        <div class="guest-fields" style="border:1px solid #ccc; padding:15px; margin:15px 0; border-radius:8px; background:#f9f9f9; max-width:400px;">
+                          <label for="guestName" style="display:block; margin-bottom:5px; font-weight:bold;">Name</label>
+                          <input type="text" name="guestName" required placeholder="Enter your name"
+                            style="width:100%; padding:8px; margin-bottom:12px; border:1px solid #ccc; border-radius:5px;" />
+                        
+                          <label for="guestEmail" style="display:block; margin-bottom:5px; font-weight:bold;">Email</label>
+                          <input type="email" name="guestEmail" required placeholder="Enter your email"
+                            style="width:100%; padding:8px; margin-bottom:12px; border:1px solid #ccc; border-radius:5px;" />
+                        
+                          <label for="guestPhone" style="display:block; margin-bottom:5px; font-weight:bold;">Phone</label>
+                          <input type="tel" name="guestPhone" required placeholder="Enter your phone"
+                            style="width:100%; padding:8px; margin-bottom:12px; border:1px solid #ccc; border-radius:5px;" />
+                        
+                          <input type="hidden" name="isGuestBooking" value="true" />
+                        </div>
+                        
+                      <% } %>
+                    
+                      <!-- Dates -->
+                      <div class="date-fields">
+                        <input type="date" name="checkIn" required class="checkin-date" />
+                        <input type="date" name="checkOut" required class="checkout-date" />
+                      </div>
+                    
+                      <!-- Total Price -->
+                      <div class="total-price">
+                        Total: ₹<%= room.price.toLocaleString() %>
+                      </div>
+                    
+                      <button type="submit" class="book-btn" data-base="<%= room.price %>">
+                        <i class="fas fa-bed"></i> Book Now
+                      </button>
+                    </form>
+                  <% } else { %>
+                  <button class="book-btn" disabled>Sold Out</button>
+                  <% } %>
                 </div>
-                <% } else { %>
-                <button class="book-btn" disabled>Sold Out</button>
-                <% } %> <% } %>
               </div>
               <% }) %>
             </div>
           </div>
         </div>
+        
       </div>
     </div>
-
-
 
     <%- include('partials/footer') %>
 
@@ -647,5 +285,32 @@
       // Initialize with INR (default)
       currencySelector.dispatchEvent(new Event("change"));
     </script>
+   <script>
+    document.querySelectorAll(".booking-form").forEach(form => {
+      const checkin = form.querySelector(".checkin-date");
+      const checkout = form.querySelector(".checkout-date");
+      const totalPriceElem = form.querySelector(".total-price");
+      const basePrice = parseInt(form.querySelector(".book-btn").dataset.base);
+    
+      function updatePrice() {
+        if (checkin.value && checkout.value) {
+          const inDate = new Date(checkin.value);
+          const outDate = new Date(checkout.value);
+          const nights = (outDate - inDate) / (1000 * 60 * 60 * 24);
+    
+          if (nights > 0) {
+            totalPriceElem.textContent = `Total: ₹${(nights * basePrice).toLocaleString()}`;
+          } else {
+            totalPriceElem.textContent = `⚠️ Invalid dates`;
+          }
+        }
+      }
+    
+      checkin.addEventListener("change", updatePrice);
+      checkout.addEventListener("change", updatePrice);
+    });
+    </script>
+    
+    
   </body>
 </html>

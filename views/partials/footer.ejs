@@ -1,56 +1,94 @@
 <footer style="background-color: #0f3460; color: white; padding: 40px 20px; margin-top: 20px; font-size: 14px;">
-  <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between;">
-      <!-- About Us Section -->
-      <div style="flex: 1 1 300px; margin: 10px;">
-          <h3 style="color: #fdb827;">About Us</h3>
-          <p>
-              Welcome to Hotel Booking App, your one-stop solution for finding the best hotels at affordable prices. 
-              We aim to make your travel experience seamless and enjoyable.
-          </p>
+    <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px;">
+  
+      <!-- Help Section -->
+      <div>
+        <h3 style="color: #fdb827; margin-bottom: 15px;">Help</h3>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+          <li><a href="/help" style="color: white; text-decoration: none;">Help Center</a></li>
+          <li><a href="/faq" style="color: white; text-decoration: none;">FAQs</a></li>
+          <li><a href="/privacy" style="color: white; text-decoration: none;">Privacy Policy</a></li>
+          <li><a href="/terms" style="color: white; text-decoration: none;">Terms of Use</a></li>
+        </ul>
       </div>
-
-      <!-- Quick Links Section -->
-      <div style="flex: 1 1 200px; margin: 10px;">
-          <h3 style="color: #fdb827;">Quick Links</h3>
-          <ul style="list-style: none; padding: 0;">
-              <li><a href="/about" style="color: white; text-decoration: none;">About Us</a></li>
-              <li><a href="/contact" style="color: white; text-decoration: none;">Contact</a></li>
-              <li><a href="/privacy" style="color: white; text-decoration: none;">Privacy Policy</a></li>
-              <li><a href="/terms" style="color: white; text-decoration: none;">Terms & Conditions</a></li>
-              <li><a href="/faq" style="color: white; text-decoration: none;">FAQs</a></li>
+  
+      <!-- Company Section -->
+      <div>
+        <h3 style="color: #fdb827; margin-bottom: 15px;">Company</h3>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+          <li><a href="/about" style="color: white; text-decoration: none;">About Us</a></li>
+          <li><a href="/careers" style="color: white; text-decoration: none;">Careers</a></li>
+          <li><a href="/blog" style="color: white; text-decoration: none;">Blog</a></li>
+          <li><a href="/press" style="color: white; text-decoration: none;">Press</a></li>
+        </ul>
+      </div>
+  
+      <!-- Destinations Section -->
+      <div>
+        <h3 style="color: #fdb827; margin-bottom: 15px;">Destinations</h3>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+          <!-- Asia -->
+          <ul style="list-style: none; padding: 0; margin: 0;">
+            <li><strong>Asia</strong></li>
+            <li><a href="/destinations/india" style="color: white; text-decoration: none;">India Hotels</a></li>
+            <li><a href="/destinations/thailand" style="color: white; text-decoration: none;">Thailand Hotels</a></li>
+            <li><a href="/destinations/japan" style="color: white; text-decoration: none;">Japan Hotels</a></li>
+            <li><a href="/destinations/malaysia" style="color: white; text-decoration: none;">Malaysia Hotels</a></li>
           </ul>
+          <!-- Europe -->
+          <ul style="list-style: none; padding: 0; margin: 0;">
+            <li><strong>Europe</strong></li>
+            <li><a href="/destinations/france" style="color: white; text-decoration: none;">France Hotels</a></li>
+            <li><a href="/destinations/italy" style="color: white; text-decoration: none;">Italy Hotels</a></li>
+            <li><a href="/destinations/germany" style="color: white; text-decoration: none;">Germany Hotels</a></li>
+            <li><a href="/destinations/uk" style="color: white; text-decoration: none;">UK Hotels</a></li>
+          </ul>
+          <!-- Americas -->
+          <ul style="list-style: none; padding: 0; margin: 0;">
+            <li><strong>Americas</strong></li>
+            <li><a href="/destinations/usa" style="color: white; text-decoration: none;">USA Hotels</a></li>
+            <li><a href="/destinations/brazil" style="color: white; text-decoration: none;">Brazil Hotels</a></li>
+            <li><a href="/destinations/canada" style="color: white; text-decoration: none;">Canada Hotels</a></li>
+            <li><a href="/destinations/mexico" style="color: white; text-decoration: none;">Mexico Hotels</a></li>
+          </ul>
+          <!-- Middle East -->
+          <ul style="list-style: none; padding: 0; margin: 0;">
+            <li><strong>Middle East</strong></li>
+            <li><a href="/destinations/uae" style="color: white; text-decoration: none;">UAE Hotels</a></li>
+            <li><a href="/destinations/egypt" style="color: white; text-decoration: none;">Egypt Hotels</a></li>
+            <li><a href="/destinations/turkey" style="color: white; text-decoration: none;">Turkey Hotels</a></li>
+            <li><a href="/destinations/saudi" style="color: white; text-decoration: none;">Saudi Arabia Hotels</a></li>
+          </ul>
+        </div>
       </div>
-
-      <!-- Contact Information Section -->
-      <div style="flex: 1 1 200px; margin: 10px;">
-          <h3 style="color: #fdb827;">Contact Us</h3>
-          <p>Email: <a href="mailto:support@hotelbookingapp.com" style="color: white; text-decoration: none;">support@hotelbookingapp.com</a></p>
-          <p>Phone: <a href="tel:+1234567890" style="color: white; text-decoration: none;">+1 234 567 890</a></p>
-          <p>Address: 123 Main Street, City, Country</p>
+  
+      <!-- Partner Section -->
+      <div>
+        <h3 style="color: #fdb827; margin-bottom: 15px;">Partner with Us</h3>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+          <li><a href="/partner" style="color: white; text-decoration: none;">Partner Portal</a></li>
+          <li><a href="/advertise" style="color: white; text-decoration: none;">Advertise</a></li>
+          <li><a href="/affiliates" style="color: white; text-decoration: none;">Affiliates</a></li>
+          <li><a href="/api" style="color: white; text-decoration: none;">API Access</a></li>
+        </ul>
       </div>
-
+  
       <!-- Social Media Section -->
-      <div style="flex: 1 1 200px; margin: 10px;">
-          <h3 style="color: #fdb827;">Follow Us</h3>
-          <div style="display: flex; gap: 10px;">
-              <a href="https://facebook.com" target="_blank" style="color: white; text-decoration: none;">
-                  <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width: 24px; height: 24px;">
-              </a>
-              <a href="https://twitter.com" target="_blank" style="color: white; text-decoration: none;">
-                  <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" style="width: 24px; height: 24px;">
-              </a>
-              <a href="https://instagram.com" target="_blank" style="color: white; text-decoration: none;">
-                  <img src="https://cdn-icons-png.flaticon.com/512/733/733558.png" alt="Instagram" style="width: 24px; height: 24px;">
-              </a>
-              <a href="https://linkedin.com" target="_blank" style="color: white; text-decoration: none;">
-                  <img src="https://cdn-icons-png.flaticon.com/512/733/733561.png" alt="LinkedIn" style="width: 24px; height: 24px;">
-              </a>
-          </div>
+      <div>
+        <h3 style="color: #fdb827; margin-bottom: 15px;">Follow Us</h3>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <a href="https://facebook.com" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width: 24px; height: 24px;"></a>
+          <a href="https://twitter.com" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" style="width: 24px; height: 24px;"></a>
+          <a href="https://instagram.com" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733558.png" alt="Instagram" style="width: 24px; height: 24px;"></a>
+          <a href="https://linkedin.com" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733561.png" alt="LinkedIn" style="width: 24px; height: 24px;"></a>
+        </div>
       </div>
-  </div>
-
-  <!-- Footer Bottom -->
-  <div style="text-align: center; margin-top: 20px; border-top: 1px solid #fdb827; padding-top: 20px;">
-      <p>&copy; <%= new Date().getFullYear() %> Hotel Booking App. All rights reserved.</p>
-  </div>
-</footer>
+  
+    </div>
+  
+    <!-- Bottom Section -->
+    <div style="text-align: center; margin-top: 30px; border-top: 1px solid #fdb827; padding-top: 20px;">
+      <p>&copy; <%= new Date().getFullYear() %> Roomzy. All rights reserved.</p>
+    </div>
+  </footer>
+  

@@ -4,106 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Available Hotels</title>
-    <style>
-      body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f4f6f8;
-        color: #333;
-      }
-      header {
-        background-color: #0f3460;
-        color: white;
-        padding: 20px;
-        text-align: center;
-      }
-      header a {
-        color: #fdb827;
-        text-decoration: none;
-        margin: 0 10px;
-        font-weight: bold;
-      }
-      .hotel-list {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 20px;
-        padding: 30px;
-      }
-      .hotel-card {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        transition: transform 0.3s ease;
-      }
-      .hotel-card:hover {
-        transform: translateY(-5px);
-      }
-      .hotel-card img {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-      }
-      .hotel-card h2 {
-        margin: 15px;
-        color: #0f3460;
-      }
-      .hotel-card p {
-        margin: 10px 15px;
-        font-size: 15px;
-        line-height: 1.4;
-      }
-      .weather {
-        margin: 10px 15px;
-        font-size: 14px;
-        color: #555;
-      }
-      form {
-        margin: 10px 15px;
-      }
-      button {
-        background-color: #0f3460;
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        cursor: pointer;
-        border-radius: 5px;
-      }
-      .login-btn {
-        display: inline-block;
-        padding: 10px 10px;
-        background-color: #3498db;
-        color: white;
-        text-decoration: none;
-        border-radius: 8px;
-        font-weight: bold;
-        transition: background-color 0.3s ease;
-      }
-      .search-container {
-        text-align: center;
-        margin: 20px;
-      }
-      .search-container input {
-        padding: 10px;
-        width: 50%;
-        font-size: 16px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-      }
-      .search-container button {
-        padding: 10px 20px;
-        font-size: 16px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      .search-container button:hover {
-        background-color: #0056b3;
-      }
-    </style>
+    <link rel="icon" type="image/jpeg" href="images/favicon-32x32.png">
+    <link rel="stylesheet" href="/hotels.css">
   </head>
 
   <body>
@@ -118,7 +20,7 @@
   
           <!-- Navigation Links -->
           <nav style="flex: 2; text-align: center;">
-              <a href="/" style="color: white; text-decoration: none; margin: 0 15px;">Home</a>
+              <a href="/home" style="color: white; text-decoration: none; margin: 0 15px;">Home</a>
               <a href="/user/bookings" style="color: white; text-decoration: none; margin: 0 15px;">Your Bookings</a>
               <a href="/login" style="color: white; text-decoration: none; margin: 0 15px;">Login</a>
               <a href="/signup" style="color: white; text-decoration: none; margin: 0 15px;">Signup</a>
@@ -126,18 +28,13 @@
   
           <!-- Currency Selector -->
           <div style="flex: 1; text-align: right;">
-              <label for="currency" style="color: white; margin-right: 10px;">Currency:</label>
-              <select id="currency" style="padding: 5px; border-radius: 5px; border: none;">
-                  <option value="INR" selected>INR (₹)</option>
-                  <option value="USD">USD ($)</option>
-                  <option value="EUR">EUR (€)</option>
-                  <option value="GBP">GBP (£)</option>
-              </select>
+            <a href="/profile" style="color: white; text-decoration: none; margin: 0 15px;">Profile</a>
           </div>
       </div>
   </header>
 
-    <% if (user) { %>
+
+  <% if (user) { %>
     <h2 style="text-align: center; text-transform: capitalize">
       <span style="color: #0c218b">Welcome :</span> <%= user.username %>
     </h2>
@@ -146,75 +43,82 @@
       <span style="color: #0c218b">Welcome, Guest!</span>
     </h2>
     <% } %>
+  
+<!-- 🔍 Search -->
+<div class="search-container">
+  <input type="text" id="hotelSearch" placeholder="Search hotels by name or city..." />
+  <button id="hotelSearchButton">Search</button>
+</div>
 
-    <div class="search-container">
-      <input
-        type="text"
-        id="hotelSearch"
-        placeholder="Search hotels by name or city..."
-      />
-      <button id="searchButton">Search</button>
-    </div>
+<!-- 🏷️ Filters -->
+<div class="filter-section">
+  <form id="filterForm" class="filter-form">
+    <!-- Price -->
+    <label for="priceFilter">Price:</label>
+    <select id="priceFilter">
+      <option value="">Any</option>
+      <option value="0-1000">₹0 - ₹1000</option>
+      <option value="1000-3000">₹1000 - ₹3000</option>
+      <option value="3000-5000">₹3000 - ₹5000</option>
+      <option value="5000+">₹5000+</option>
+    </select>
 
-    <div class="hotel-list">
-      <% hotels.forEach(hotel => { %>
-      <div
-        class="hotel-card"
-        data-name="<%= hotel.name.toLowerCase() %>"
-        data-city="<%= hotel.location.toLowerCase() %>"
-      >
-        <img src="<%= hotel.image %>" alt="<%= hotel.name %>" />
-        <h2><%= hotel.name %></h2>
-        <p><strong>Location:</strong> <%= hotel.location %></p>
-        <p class="weather" id="weather-<%= hotel._id %>">Loading weather...</p>
+    <!-- Rating -->
+    <label for="ratingFilter">Rating:</label>
+    <select id="ratingFilter">
+      <option value="">Any</option>
+      <option value="5">5★</option>
+      <option value="4">4★ & above</option>
+      <option value="3">3★ & above</option>
+    </select>
 
-        <div style="margin: 15px 0; text-align: center">
-          <a
-            href="/hotel/<%= hotel._id %>"
-            style="
-              background: linear-gradient(135deg, #0f3460, #1a4d8f);
-              color: white;
-              text-decoration: none;
-              padding: 10px 20px;
-              border-radius: 25px;
-              font-size: 0.9em;
-              display: inline-block;
-              transition: all 0.3s ease;
-              margin: 5px;
-            "
-            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(15, 52, 96, 0.3)'"
-            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
-          >
-            🏨 View Details
-          </a>
+    <!-- Apply Button -->
+    <button id="filterButton" type="button">Apply Filters</button>
+  </form>
+</div>
 
-          <a
-            href="/hotel/<%= hotel._id %>/map"
-            style="
-              background: linear-gradient(135deg, #28a745, #20c997);
-              color: white;
-              text-decoration: none;
-              padding: 10px 20px;
-              border-radius: 25px;
-              font-size: 0.9em;
-              display: inline-block;
-              transition: all 0.3s ease;
-              margin: 5px;
-            "
-            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(40, 167, 69, 0.3)'"
-            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
-          >
-            🗺️ View Map
-          </a>
-        </div>
+
+  <!-- 🏨 Hotel List -->
+  <div class="hotel-list">
+    <% hotels.forEach(hotel => { %>
+    <div
+      class="hotel-card"
+      data-name="<%= hotel.name.toLowerCase() %>"
+      data-city="<%= hotel.location.toLowerCase() %>"
+      data-price="<%= hotel.price %>"
+      data-rating="<%= hotel.rating %>"
+    >
+      <img src="<%= hotel.image %>" alt="<%= hotel.name %>" />
+      <h2><%= hotel.name %></h2>
+      <p><strong>Location:</strong> <%= hotel.location %></p>
+      <p><strong>Rating:</strong>
+        <% for (let i = 0; i < hotel.rating; i++) { %>
+          ★
+        <% } %>
+        <% for (let i = hotel.rating; i < 5; i++) { %>
+          ☆
+        <% } %>
+      </p>
+      <p class="weather" id="weather-<%= hotel._id %>">Loading weather...</p>
+  
+      <!-- Buttons -->
+      <div style="margin: 15px 0; text-align: center">
+        <a href="/hotel/<%= hotel._id %>" style="padding:8px 12px; background:#007BFF; color:white; border-radius:5px; text-decoration:none; margin-right:8px;">
+          🏨 View Details
+        </a>
+        <a href="/hotel/<%= hotel._id %>/map" style="padding:8px 12px; background:#28A745; color:white; border-radius:5px; text-decoration:none;">
+          🗺️ View Map
+        </a>
       </div>
-      <% }) %>
     </div>
+    <% }) %>
+  </div>
+  
 
     <%- include('partials/footer') %>
 
     <script>
-      // ✅ Fetch weather for each hotel from backend
+      //  Fetch weather for each hotel from backend
       document.querySelectorAll(".hotel-card").forEach((card) => {
         const city = card.getAttribute("data-city");
         const weatherElement = card.querySelector(".weather");
@@ -321,5 +225,57 @@
         });
       }
     </script>
+<script>
+  // 🔍 Hotel search by name or city
+  document.getElementById("hotelSearchButton").addEventListener("click", function () {
+    const query = document.getElementById("hotelSearch").value.toLowerCase();
+    const hotelCards = document.querySelectorAll(".hotel-card");
+
+    hotelCards.forEach((card) => {
+      const hotelName = card.getAttribute("data-name").toLowerCase();
+      const hotelCity = card.getAttribute("data-city").toLowerCase();
+      if (hotelName.includes(query) || hotelCity.includes(query)) {
+        card.style.display = "block";
+      } else {
+        card.style.display = "none";
+      }
+    });
+  });
+
+  // 🏷️ Apply filters (price + rating)
+  document.getElementById("filterButton").addEventListener("click", function () {
+    const priceVal = document.getElementById("priceFilter").value;
+    const ratingVal = document.getElementById("ratingFilter").value;
+
+    document.querySelectorAll(".hotel-card").forEach((card) => {
+      const price = parseFloat(card.dataset.price);
+      const rating = parseFloat(card.dataset.rating);
+      let visible = true;
+
+      // 💰 Price filter
+      if (priceVal) {
+        if (priceVal.includes("+")) {
+          visible = visible && price >= parseInt(priceVal);
+        } else {
+          const [min, max] = priceVal.split("-").map(Number);
+          visible = visible && price >= min && price <= max;
+        }
+      }
+
+      // ⭐ Rating filter
+      if (ratingVal) {
+        visible = visible && rating >= parseInt(ratingVal);
+      }
+
+      card.style.display = visible ? "block" : "none";
+    });
+  });
+</script>
+
+
+  
+  
+  
+  
   </body>
 </html>
