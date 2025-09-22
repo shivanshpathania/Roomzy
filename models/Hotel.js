@@ -45,6 +45,18 @@ const HotelSchema = new mongoose.Schema(
       default: 0,
       min: 0,
       max: 5
+    },
+
+    // 💸 Optional sale fields
+    discountPercent: {
+      type: Number,
+      min: 0,
+      max: 100,
+      default: 0
+    },
+    saleEndsAt: {
+      type: Date,
+      required: false
     }
   },
   { timestamps: true }

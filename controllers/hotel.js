@@ -75,3 +75,31 @@ const getHotelMap = async (req, res) => {
 };
 
 module.exports = { getAllHotels, getHotelDetails, getHotelMap };
+ 
+// Below: lightweight admin-style action to set sale on a hotel
+const setSale = async (req, res) => {
+  try {
+    if (!req.session.user) {
+      return res.status(401).json({ message: 'Login required' });
+    }
+
+    const { id } = req.params;
+    const { discountPercent, saleEndsAt } = req.body;
+
+    const update = {};
+    if (discountPercent !== undefined) update.discountPercent = Number(discountPercent) || 0;
+    if (saleEndsAt) update.saleEndsAt = new Date(saleEndsAt);
+
+    const hotel = await Hotel.findByIdAndUpdate(id, update, { new: true });
+    if (!hotel) return res.status(404).json({ message: 'Hotel not found' });
+
+    res.status(200).json({ message: 'Sale updated', hotel });
+  } catch (err) {
+    console.error('Error updating sale:', err);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+};
+
+module.exports.setSale = setSale;
+
+// (demo sale removed on request)

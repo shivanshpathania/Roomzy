@@ -83,9 +83,12 @@
           <% } %>
         </div>
 
+        
+
         <div class="rooms-section">
           <div class="info-section">
             <h3>🏨 Available Rooms</h3>
+            
             <div class="rooms-grid">
               <% hotel.rooms.forEach(room => { %>
               <div class="room-card">
@@ -337,6 +340,64 @@
     });
     </script>
     <script>
+      // Admin-like sale controls (quick)
+      (function(){
+        const setBtn = document.getElementById('setSaleBtn');
+        const demoBtn = document.getElementById('demoSaleBtn');
+        const msg = document.getElementById('saleMsg');
+        if (setBtn) {
+          setBtn.addEventListener('click', async () => {
+            const discount = Number(document.getElementById('saleDiscount').value || 0);
+            const ends = document.getElementById('saleEnds').value; // datetime-local
+            if (!ends) return alert('Please pick sale end time');
+            const iso = new Date(ends).toISOString();
+            try {
+              const res = await fetch('/hotel/<%= hotel._id %>/sale', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ discountPercent: discount, saleEndsAt: iso })
+              });
+              if (res.ok) { msg.style.display = 'inline'; setTimeout(()=>location.reload(), 700); }
+            } catch(e){ console.error(e); }
+          });
+        }
+        if (demoBtn) {
+          demoBtn.addEventListener('click', async () => {
+            try {
+              const res = await fetch('/hotel/<%= hotel._id %>/sale-demo', { method: 'POST' });
+              if (res.ok) { msg.style.display = 'inline'; setTimeout(()=>location.reload(), 700); }
+            } catch(e){ console.error(e); }
+          });
+        }
+      })();
+
+      // Sale countdown
+      (function() {
+        const saleBanner = document.getElementById('saleBanner');
+        const saleTimer = document.getElementById('saleTimer');
+        <% if (hotel.saleEndsAt) { %>
+        const endsAt = new Date('<%= hotel.saleEndsAt %>').getTime();
+        if (saleBanner && saleTimer) {
+          function tick() {
+            const now = Date.now();
+            const diff = endsAt - now;
+            if (diff <= 0) {
+              saleBanner.style.display = 'none';
+              clearInterval(interval);
+              return;
+            }
+            const d = Math.floor(diff / (1000*60*60*24));
+            const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+            const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+            const s = Math.floor((diff % (1000*60)) / 1000);
+            saleTimer.textContent = `${d}d ${h}h ${m}m ${s}s`;
+          }
+          tick();
+          const interval = setInterval(tick, 1000);
+        }
+        <% } %>
+      })();
+
       // Wishlist
       const wishlistBtn = document.getElementById('wishlistBtn');
       if (wishlistBtn) {
