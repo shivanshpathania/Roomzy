@@ -9,6 +9,8 @@ const weatherRoutes = require("./routes/weatherRoute");
 const currencyRoutes = require("./routes/currency");
 const session = require("express-session");
 const methodOverride = require("method-override");
+const wishlistRoutes = require("./routes/wishlist");
+const feedbackRoutes = require("./routes/feedback");
 const path = require("path");
 const fs = require('fs');
 const app = express();
@@ -33,6 +35,8 @@ app.use(methodOverride('_method'));
 app.use('/api/auth', authRoute);
 app.use("/", hotelRoute);
 app.use("/api/bookings", bookingsRoute);
+app.use("/api/wishlist", wishlistRoutes);
+app.use("/api/feedback", feedbackRoutes);
 
 // Auth Views
 app.get('/', (_, res) => {

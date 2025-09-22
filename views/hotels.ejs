@@ -74,6 +74,13 @@
 
     <!-- Apply Button -->
     <button id="filterButton" type="button">Apply Filters</button>
+
+    <% if (user) { %>
+    <!-- Wishlist filter -->
+    <label style="margin-left:12px;">
+      <input type="checkbox" id="onlyWishlist" /> Show only wishlist
+    </label>
+    <% } %>
   </form>
 </div>
 
@@ -83,6 +90,7 @@
     <% hotels.forEach(hotel => { %>
     <div
       class="hotel-card"
+      data-id="<%= hotel._id %>"
       data-name="<%= hotel.name.toLowerCase() %>"
       data-city="<%= hotel.location.toLowerCase() %>"
       data-price="<%= hotel.price %>"
@@ -270,6 +278,43 @@
       card.style.display = visible ? "block" : "none";
     });
   });
+</script>
+<script>
+  // ⭐ Wishlist filter
+  <% if (user) { %>
+  let wishlistHotelIds = new Set();
+  (async function loadWishlist() {
+    try {
+      const res = await fetch('/api/wishlist/me');
+      const data = await res.json();
+      const hotels = data.wishlist || [];
+      wishlistHotelIds = new Set(hotels.map(h => h._id));
+
+      // Mark wishlisted cards (optional visual cue)
+      document.querySelectorAll('.hotel-card').forEach(card => {
+        const id = card.getAttribute('data-id');
+        if (wishlistHotelIds.has(id)) {
+          const tag = document.createElement('div');
+          tag.textContent = '❤️ In wishlist';
+          tag.style.color = '#ff3b3b';
+          tag.style.fontWeight = 'bold';
+          tag.style.marginTop = '6px';
+          card.querySelector('h2').after(tag);
+        }
+      });
+    } catch (e) { console.error('Wishlist load failed', e); }
+  })();
+
+  const onlyWishlist = document.getElementById('onlyWishlist');
+  onlyWishlist && onlyWishlist.addEventListener('change', () => {
+    const showOnly = onlyWishlist.checked;
+    document.querySelectorAll('.hotel-card').forEach(card => {
+      const id = card.getAttribute('data-id');
+      const inWishlist = wishlistHotelIds.has(id);
+      card.style.display = showOnly ? (inWishlist ? 'block' : 'none') : 'block';
+    });
+  });
+  <% } %>
 </script>
 
 

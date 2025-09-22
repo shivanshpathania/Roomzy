@@ -42,6 +42,13 @@
             <a href="/hotel/<%= hotel._id %>/map" class="directions-btn">
               🗺️ View on Map
             </a>
+
+            <% if (user) { %>
+            <button id="wishlistBtn" style="margin-left:10px; padding:10px 14px; border:none; border-radius:8px; background:#ff3b3b; color:#fff; cursor:pointer;">
+              ❤️ Add to Wishlist
+            </button>
+            <span id="wishlistMsg" style="margin-left:8px; color:#28a745; display:none;">Added!</span>
+            <% } %>
           </div>
         </div>
 
@@ -168,6 +175,25 @@
               <% }) %>
             </div>
           </div>
+        </div>
+
+        <!-- Feedback Section -->
+        <div class="info-section" style="margin-top:24px;">
+          <h3>🗣️ Guest Feedback</h3>
+          <div id="feedbackList" style="display:flex; flex-direction:column; gap:10px;"></div>
+
+          <% if (user) { %>
+          <form id="feedbackForm" style="margin-top:16px; max-width:520px;">
+            <label style="display:block; margin-bottom:6px; font-weight:bold;">Rating (1-5)</label>
+            <input type="number" name="rating" min="1" max="5" required style="width:120px; padding:8px; border:1px solid #ccc; border-radius:6px;" />
+            <label style="display:block; margin:12px 0 6px; font-weight:bold;">Comment</label>
+            <textarea name="comment" rows="3" placeholder="Share your experience" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px;"></textarea>
+            <button type="submit" style="margin-top:12px; padding:10px 14px; border:none; border-radius:8px; background:#007bff; color:#fff; cursor:pointer;">Submit Feedback</button>
+            <span id="feedbackMsg" style="margin-left:8px; color:#28a745; display:none;">Thanks for your feedback!</span>
+          </form>
+          <% } else { %>
+            <p style="margin-top:10px;">Please <a href="/login">login</a> to add feedback.</p>
+          <% } %>
         </div>
         
       </div>
@@ -309,6 +335,75 @@
       checkin.addEventListener("change", updatePrice);
       checkout.addEventListener("change", updatePrice);
     });
+    </script>
+    <script>
+      // Wishlist
+      const wishlistBtn = document.getElementById('wishlistBtn');
+      if (wishlistBtn) {
+        wishlistBtn.addEventListener('click', async () => {
+          try {
+            const res = await fetch('/api/wishlist/add', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ hotelId: '<%= hotel._id %>' })
+            });
+            if (res.ok) {
+              document.getElementById('wishlistMsg').style.display = 'inline';
+              wishlistBtn.textContent = '❤️ Wishlisted';
+              wishlistBtn.disabled = true;
+              wishlistBtn.style.opacity = '0.7';
+            }
+          } catch (e) { console.error(e); }
+        });
+      }
+
+      // Feedback - fetch list
+      async function loadFeedback() {
+        try {
+          const res = await fetch('/api/feedback/hotel/<%= hotel._id %>');
+          const data = await res.json();
+          const box = document.getElementById('feedbackList');
+          box.innerHTML = '';
+          (data.feedback || []).forEach(f => {
+            const div = document.createElement('div');
+            div.style.border = '1px solid #e5e5e5';
+            div.style.padding = '12px';
+            div.style.borderRadius = '8px';
+            div.innerHTML = `<strong>${(f.userId && f.userId.username) || 'User'}</strong> • ⭐ ${f.rating}<br>${f.comment || ''}`;
+            box.appendChild(div);
+          });
+          if (!data.feedback || data.feedback.length === 0) {
+            box.innerHTML = '<p>No feedback yet.</p>';
+          }
+        } catch (e) { console.error(e); }
+      }
+      loadFeedback();
+
+      // Feedback - submit
+      const feedbackForm = document.getElementById('feedbackForm');
+      if (feedbackForm) {
+        feedbackForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const formData = new FormData(feedbackForm);
+          const payload = {
+            hotelId: '<%= hotel._id %>',
+            rating: Number(formData.get('rating')),
+            comment: formData.get('comment') || ''
+          };
+          try {
+            const res = await fetch('/api/feedback/submit', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+              document.getElementById('feedbackMsg').style.display = 'inline';
+              feedbackForm.reset();
+              loadFeedback();
+            }
+          } catch (e) { console.error(e); }
+        });
+      }
     </script>
     
     
