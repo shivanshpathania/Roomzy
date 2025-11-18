@@ -39,7 +39,7 @@ const HotelSchema = new mongoose.Schema(
     longitude: { type: Number, required: true },
     rooms: [RoomSchema],
 
-    // ⭐ Add rating
+    //  Add rating
     rating: {
       type: Number,
       default: 0,
@@ -47,7 +47,7 @@ const HotelSchema = new mongoose.Schema(
       max: 5
     },
 
-    // 💸 Optional sale fields
+    //  Optional sale fields
     discountPercent: {
       type: Number,
       min: 0,

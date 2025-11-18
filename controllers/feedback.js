@@ -3,7 +3,7 @@ const Hotel = require('../models/Hotel');
 
 const submitFeedback = async (req, res) => {
   try {
-    if (!req.session.user) return res.status(401).json({ message: 'Login required' });
+    if (!req.user) return res.status(401).json({ message: 'Login required' });
 
     const { hotelId, rating, comment } = req.body;
     if (!hotelId || !rating) return res.status(400).json({ message: 'hotelId and rating are required' });
@@ -12,7 +12,7 @@ const submitFeedback = async (req, res) => {
     if (!hotel) return res.status(404).json({ message: 'Hotel not found' });
 
     const feedback = new Feedback({
-      userId: req.session.user._id,
+      userId: req.user._id,
       hotelId,
       rating,
       comment: comment || ''

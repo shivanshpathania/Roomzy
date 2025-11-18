@@ -1,5 +1,11 @@
 const User = require('../models/User'); // Adjust if your path is different
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-jwt-secret-change-me';
+if (!process.env.JWT_SECRET) {
+  console.warn('JWT_SECRET is not set; using an insecure dev default. Set JWT_SECRET in .env for production.');
+}
 
 const register = async (req, res) => {
   try {
@@ -31,11 +37,20 @@ const login = async (req, res) => {
     const isMatch = await bcrypt.compare(req.body.password, user.password);
     if (!isMatch) return res.redirect('/login');
 
-    // Store user in session
-    req.session.user = {
-      _id: user._id,
-      username: user.username
-    };
+    // Sign JWT token
+    const token = jwt.sign(
+      { _id: user._id, username: user.username },
+      JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
+    // Send token as HTTP-only cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000,
+    });
 
     res.redirect('/home');
   } catch (err) {

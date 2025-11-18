@@ -3,7 +3,7 @@ require("dotenv").config();
 
 const router = express.Router();
 
-// ✅ Route: /currency/convert?from=USD&to=INR&amount=100
+// Route: /currency/convert?from=USD&to=INR&amount=100
 router.get("/convert", async (req, res) => {
   const { from, to, amount } = req.query;
 
@@ -29,7 +29,7 @@ router.get("/convert", async (req, res) => {
   }
 });
 
-// ✅ Route: /currency/rates?base=USD
+//  Route: /currency/rates?base=USD
 router.get("/rates", async (req, res) => {
   const { base = "INR" } = req.query;
 
@@ -88,7 +88,7 @@ router.get("/rates", async (req, res) => {
   }
 });
 
-// ✅ Test endpoint to check API status
+
 router.get("/test", (_, res) => {
   res.json({
     status: "Currency API is working",

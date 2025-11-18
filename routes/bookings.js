@@ -7,12 +7,6 @@ router.post("/", async (req, res) => {
   try {
     const { hotelId, roomType, userId, guestName, guestEmail, guestPhone, checkIn, checkOut } = req.body;
 
-    console.log("Booking Request Received");
-    console.log("Hotel ID:", hotelId);
-    console.log("Room Type:", roomType);
-    console.log("User ID:", userId);
-    console.log("CheckIn:", checkIn, "CheckOut:", checkOut);
-
     if (!checkIn || !checkOut) {
       return res.status(400).send("Check-in and Check-out dates are required");
     }
@@ -52,7 +46,7 @@ router.post("/", async (req, res) => {
     const bookingData = {
       hotelId,
       roomType,
-      price: room.price,       // per night price
+      price: room.price,       
       checkin: inDate,
       checkout: outDate,
       nights,
