@@ -9,33 +9,87 @@ if (!process.env.JWT_SECRET) {
 
 const register = async (req, res) => {
   try {
+    const { username, email, password } = req.body;
 
-    if (!req.body.username || !req.body.password) {
-        return res.status(400).send("Username and password are required.");
+    const errors = [];
+
+    if (!username || !username.trim()) {
+      errors.push('Username is required.');
+    } else if (username.trim().length < 3) {
+      errors.push('Username must be at least 3 characters long.');
     }
 
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    if (!email || !email.trim()) {
+      errors.push('Email is required.');
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email.trim())) {
+        errors.push('Please provide a valid email address.');
+      }
+    }
+
+    if (!password) {
+      errors.push('Password is required.');
+    } else if (password.length < 6) {
+      errors.push('Password must be at least 6 characters long.');
+    }
+
+    if (errors.length > 0) {
+      return res.redirect('/signup?error=' + encodeURIComponent(errors.join(' ')));
+    }
+
+    const existingUser = await User.findOne({
+      $or: [{ username: username.trim() }, { email: email.trim().toLowerCase() }],
+    });
+
+    if (existingUser) {
+      return res.redirect(
+        '/signup?error=' + encodeURIComponent('Username or email is already in use.')
+      );
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
-      username: req.body.username,
-      email: req.body.email,
-      password: hashedPassword
+      username: username.trim(),
+      email: email.trim().toLowerCase(),
+      password: hashedPassword,
     });
     await newUser.save();
     res.redirect('/login');
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error during registration");
+    let message = 'Error during registration';
+    if (err.code === 11000) {
+      message = 'Username or email is already in use.';
+    }
+    res.redirect('/signup?error=' + encodeURIComponent(message));
   }
 };
 
 const login = async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
+    const { username, password } = req.body;
 
-    if (!user) return res.redirect('/signup');
+    if (!username || !username.trim() || !password) {
+      return res.redirect(
+        '/login?error=' + encodeURIComponent('Username and password are required.')
+      );
+    }
 
-    const isMatch = await bcrypt.compare(req.body.password, user.password);
-    if (!isMatch) return res.redirect('/login');
+    const user = await User.findOne({ username: username.trim() });
+
+    if (!user) {
+      return res.redirect(
+        '/login?error=' + encodeURIComponent('Invalid username or password.')
+      );
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.redirect(
+        '/login?error=' + encodeURIComponent('Invalid username or password.')
+      );
+    }
 
     // Sign JWT token
     const token = jwt.sign(

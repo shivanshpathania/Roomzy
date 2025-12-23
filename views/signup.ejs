@@ -10,6 +10,11 @@
 <body>
     <div class="form-container">
         <h2>Sign Up</h2>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="error-message"><%= error %></div>
+        <% } %>
+
         <form action="/api/auth/signup" method="POST">
             <input type="text" name="username" placeholder="Username" required />
             <input type="email" name="email" placeholder="Email" required />

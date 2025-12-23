@@ -39,16 +39,16 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/feedback", feedbackRoutes);
 
 // Auth Views
-app.get('/', (_, res) => {
-    res.render('login');
+app.get('/', (req, res) => {
+    res.render('login', { error: req.query.error });
 });
 
-app.get('/login', (_, res) => {
-    res.render('login');
+app.get('/login', (req, res) => {
+    res.render('login', { error: req.query.error });
 });
 
-app.get('/signup', (_, res) => {
-    res.render('signup');
+app.get('/signup', (req, res) => {
+    res.render('signup', { error: req.query.error });
 });
 
 app.get('/home', (req, res) => {
